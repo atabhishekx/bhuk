@@ -418,10 +418,20 @@ class OrderControllerTest {
         // Advance one order to PREPARING via staff
         String staffToken = loginAsAdmin();
 
+        CreateOrderRequest freshRequest = new CreateOrderRequest();
+        freshRequest.setIdempotencyKey("fresh-key-" + System.currentTimeMillis());
+        CreateOrderRequest.DeliveryAddress freshAddr = new CreateOrderRequest.DeliveryAddress();
+        freshAddr.setFullAddress("123 Customer Street");
+        freshAddr.setCity("City");
+        freshAddr.setState("State");
+        freshAddr.setPincode("110001");
+        freshAddr.setPhone("+91-9999999999");
+        freshRequest.setDeliveryAddress(freshAddr);
+
         String freshCreate = mockMvc.perform(post("/api/v1/orders")
                         .header("Authorization", "Bearer " + customerToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(body(new CreateOrderRequest() {{ setIdempotencyKey("fresh-key-" + System.currentTimeMillis()); }})))
+                        .content(body(freshRequest)))
                 .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString();
         Long freshOrderId = objectMapper.readTree(freshCreate).path("data").path("id").asLong();

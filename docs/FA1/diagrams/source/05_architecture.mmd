@@ -1,0 +1,360 @@
+# System Architecture Diagram
+
+```mermaid
+flowchart TB
+    subgraph "CLIENT LAYER"
+        Browser[🌐 Browser\nReact 19 + TypeScript\nPort 5173]
+        LocalStorage[(💾 localStorage\nJWT Token\nUser Profile)]
+    end
+    
+    subgraph "FRONTEND (Vite Dev Server)"
+        App[App.tsx\nRoutes + Providers]
+        AuthCtx[AuthContext.tsx\nGlobal Auth State]
+        Axios[axios.ts\nHTTP Client + Interceptors]
+        Pages[Pages/\nMenu, Cart, Checkout\nOrders, Admin, Delivery]
+        Components[Components/\nNavbar, CartItem, Toast\nPageLayout, Common]
+    end
+    
+    subgraph "API GATEWAY / REVERSE PROXY (Production)"
+        Nginx[NGINX\nSSL Termination\nStatic Files\nRate Limiting]
+    end
+    
+    subgraph "BACKEND - SPRING BOOT 3.2.5\nPort 8080"
+        direction TB
+        
+        subgraph "WEB LAYER"
+            Controllers[Controllers\nAuthController\nMenuController\nCartController\nOrderController\nDeliveryController\nAdminUserController\nHealthController]
+            Filters[JwtAuthenticationFilter\nOncePerRequestFilter]
+            ExceptionHandler[GlobalExceptionHandler\n@ControllerAdvice]
+        end
+        
+        subgraph "SECURITY"
+            SecConfig[SecurityConfig\n@EnableWebSecurity\n@EnableMethodSecurity]
+            JwtUtil[JwtUtil\nGenerate/Validate JWT]
+            UserDetailsSvc[CustomUserDetailsService\nUserDetailsService]
+            AuthManager[AuthenticationManager\nDaoAuthenticationProvider]
+        end
+        
+        subgraph "SERVICE LAYER"
+            AuthSvc[AuthService]
+            UserSvc[UserService]
+            MenuSvc[MenuService]
+            CartSvc[CartService]
+            OrderSvc[OrderService]
+            DeliverySvc[DeliveryService]
+            OrderNumGen[OrderNumberGenerator]
+        end
+        
+        subgraph "DATA ACCESS"
+            Repositories[Spring Data JPA Repositories\nUserRepository\nMenuItemRepository\nOrderRepository\nCartRepository\nDeliveryPartnerRepository\n...]
+        end
+        
+        subgraph "DOMAIN MODEL"
+            Entities[JPA Entities\nUser, MenuItem, Order\nCart, DeliveryPartner\n...]
+            DTOs[DTOs\n*Request, *Response\nApiResponse, ErrorResponse]
+        end
+    end
+    
+    subgraph "DATABASE LAYER"
+        MySQL[(MySQL 8.0\nrestru_db\nPort 3306)]
+        Flyway[Flyway Migrations\nV1-V9 SQL Files]
+    end
+    
+    subgraph "EXTERNAL SERVICES"
+        Razorpay[Razorpay\nPayment Gateway\nWebhooks Only]
+    end
+    
+    %% Connections
+    Browser -->|HTTPS/HTTP| Nginx
+    Nginx -->|Proxy /api/*| Controllers
+    Nginx -->|Static Files| Browser
+    
+    Browser -->|Direct (Dev)| Controllers
+    Browser <-->|JWT in Header| Axios
+    Axios <-->|Attach Token| LocalStorage
+    AuthCtx <-->|Persist/Read| LocalStorage
+    
+    App --> AuthCtx
+    App --> Pages
+    Pages --> Components
+    Pages --> Axios
+    Components --> Axios
+    
+    Controllers --> Filters
+    Filters --> JwtUtil
+    Filters --> UserDetailsSvc
+    SecConfig --> JwtUtil
+    SecConfig --> UserDetailsSvc
+    SecConfig --> AuthManager
+    AuthManager --> UserDetailsSvc
+    
+    Controllers --> AuthSvc
+    Controllers --> MenuSvc
+    Controllers --> CartSvc
+    Controllers --> OrderSvc
+    Controllers --> DeliverySvc
+    Controllers --> UserSvc
+    
+    AuthSvc --> UserRepository
+    UserSvc --> UserRepository
+    UserSvc --> UserRoleRepository
+    UserSvc --> OutletRepository
+    MenuSvc --> MenuCategoryRepository
+    MenuSvc --> MenuItemRepository
+    MenuSvc --> ModifierGroupRepository
+    MenuSvc --> ModifierOptionRepository
+    MenuSvc --> OutletItemAvailabilityRepository
+    CartSvc --> CartRepository
+    CartSvc --> CartItemRepository
+    CartSvc --> CartItemModifierRepository
+    CartSvc --> MenuItemRepository
+    CartSvc --> ModifierOptionRepository
+    CartSvc --> UserRepository
+    OrderSvc --> OrderRepository
+    OrderSvc --> OrderItemRepository
+    OrderSvc --> OrderItemModifierRepository
+    OrderSvc --> OrderStatusEventRepository
+    OrderSvc --> IdempotencyRecordRepository
+    OrderSvc --> CartRepository
+    OrderSvc --> MenuItemRepository
+    OrderSvc --> ModifierOptionRepository
+    OrderSvc --> UserRepository
+    OrderSvc --> OutletRepository
+    OrderSvc --> OrderNumberGenerator
+    DeliverySvc --> DeliveryPartnerRepository
+    DeliverySvc --> DeliveryAssignmentRepository
+    DeliverySvc --> DeliveryIssueRepository
+    DeliverySvc --> DeliveryTrackingRepository
+    DeliverySvc --> OrderRepository
+    DeliverySvc --> UserRepository
+    
+    Repositories --> Entities
+    Entities --> MySQL
+    Flyway -.->|Versioned SQL| MySQL
+    
+    OrderSvc --> Razorpay
+    Razorpay -.->|Webhook| Controllers
+    
+    %% Styling
+    classDef frontend fill:#e3f2fd,stroke:#1976d2
+    classDef backend fill:#f3e5f5,stroke:#7b1fa2
+    classDef db fill:#e8f5e9,stroke:#388e3c
+    classDef ext fill:#fff3e0,stroke:#f57c00
+    classDef client fill:#fce4ec,stroke:#c2185b
+    
+    class Browser,LocalStorage,App,AuthCtx,Axios,Pages,Components frontend
+    class Controllers,Filters,ExceptionHandler,SecConfig,JwtUtil,UserDetailsSvc,AuthManager,AuthSvc,UserSvc,MenuSvc,CartSvc,OrderSvc,DeliverySvc,OrderNumGen,Repositories,Entities,DTOs backend
+    class MySQL,Flyway db
+    class Razorpay ext
+    class Nginx ext
+```
+
+## Component Interaction Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Customer
+    participant FE as Frontend (React)
+    participant BE as Backend (Spring Boot)
+    participant DB as MySQL
+    participant PG as Razorpay
+    
+    rect rgb(200, 240, 255)
+    Note right of Customer: AUTHENTICATION
+    Customer->>FE: Enter credentials
+    FE->>BE: POST /api/v1/auth/login
+    BE->>DB: SELECT * FROM users WHERE email=?
+    DB-->>BE: User + BCrypt hash
+    BE->>BE: BCrypt verify + JWT generate
+    BE-->>FE: {token, user}
+    FE->>LocalStorage: Save token
+    end
+    
+    rect rgb(255, 245, 230)
+    Note right of Customer: BROWSE MENU
+    Customer->>FE: Navigate to /menu
+    FE->>BE: GET /api/v1/menu/categories
+    FE->>BE: GET /api/v1/menu/items
+    BE->>DB: SELECT * FROM menu_categories...
+    DB-->>BE: Categories + Items
+    BE-->>FE: ApiResponse<List<ItemResponse>>
+    FE->>Customer: Render menu grid
+    end
+    
+    rect rgb(230, 255, 230)
+    Note right of Customer: ADD TO CART
+    Customer->>FE: Click "Add" on item
+    FE->>BE: POST /api/v1/cart/items {itemId, qty}
+    BE->>DB: SELECT * FROM menu_items WHERE id=?
+    BE->>DB: INSERT/UPDATE carts, cart_items
+    DB-->>BE: Cart state
+    BE-->>FE: ApiResponse<CartResponse>
+    FE->>Customer: Update cart badge
+    end
+    
+    rect rgb(245, 230, 255)
+    Note right of Customer: CHECKOUT & ORDER
+    Customer->>FE: Click Checkout
+    FE->>BE: GET /api/v1/cart/checkout/quote
+    BE->>DB: Recalculate from cart_items + menu_items
+    BE-->>FE: CheckoutQuoteResponse
+    FE->>Customer: Show address form + totals
+    Customer->>FE: Submit address
+    FE->>BE: POST /api/v1/orders {idempotencyKey, address}
+    BE->>DB: BEGIN TRANSACTION
+    BE->>DB: Check idempotency_records
+    BE->>DB: Recalculate prices from DB
+    BE->>DB: INSERT orders, order_items, order_item_modifiers
+    BE->>DB: INSERT order_status_events (PLACED)
+    BE->>DB: INSERT idempotency_records
+    BE->>DB: DELETE cart_items
+    BE->>DB: COMMIT
+    BE-->>FE: OrderResponse (order_number, PLACED)
+    FE->>Customer: Redirect to /orders/{id}
+    end
+    
+    rect rgb(255, 230, 240)
+    Note right of Customer: ORDER PROCESSING
+    Staff->>FE: Open Staff Dashboard
+    FE->>BE: GET /api/v1/staff/orders?status=PLACED
+    BE->>DB: SELECT * FROM orders WHERE outlet_id=? AND status='PLACED'
+    BE-->>FE: Order queue
+    Staff->>FE: Accept Order
+    FE->>BE: POST /api/v1/staff/orders/{id}/accept
+    BE->>DB: UPDATE orders SET status='CONFIRMED'
+    BE->>DB: INSERT order_status_events
+    BE-->>FE: Updated OrderResponse
+    Staff->>FE: Advance: PREPARING → READY_FOR_PICKUP
+    FE->>BE: POST /api/v1/staff/orders/{id}/status {newStatus}
+    BE->>DB: UPDATE + INSERT event
+    BE->>DeliverySvc: createOfferForOrder()
+    BE->>DB: INSERT delivery_assignments (OFFERED)
+    end
+    
+    rect rgb(255, 250, 220)
+    Note right of Customer: DELIVERY
+    Partner->>FE: Open Delivery Dashboard
+    FE->>BE: GET /api/v1/delivery/available
+    BE->>DB: SELECT * FROM delivery_assignments WHERE status='OFFERED'
+    BE-->>FE: Available orders
+    Partner->>FE: Accept assignment
+    FE->>BE: POST /api/v1/delivery/assign
+    BE->>DB: UPDATE delivery_assignments SET status='ACCEPTED'
+    Partner->>FE: Mark Picked Up
+    FE->>BE: POST /api/v1/delivery/orders/{id}/pickup
+    BE->>DB: UPDATE status='PICKED_UP', orders status='OUT_FOR_DELIVERY'
+    Partner->>FE: Update Location (periodic)
+    FE->>BE: POST /api/v1/delivery/orders/{id}/location
+    BE->>DB: INSERT delivery_tracking
+    Partner->>FE: Mark Delivered
+    FE->>BE: POST /api/v1/delivery/orders/{id}/delivered
+    BE->>DB: UPDATE status='DELIVERED', orders status='DELIVERED'
+    end
+```
+
+## Deployment Architecture
+
+```mermaid
+graph TB
+    subgraph "PRODUCTION ENVIRONMENT"
+        subgraph "DMZ"
+            LB[Load Balancer\nAWS ALB / NGINX]
+            WAF[WAF\nRate Limit, IP Block]
+        end
+        
+        subgraph "APP TIER (Auto Scaling Group)"
+            APP1[Spring Boot Pod 1\nPort 8080]
+            APP2[Spring Boot Pod 2\nPort 8080]
+            APP3[Spring Boot Pod N\nPort 8080]
+        end
+        
+        subgraph "DATA TIER"
+            Primary[(MySQL Primary\nMulti-AZ)]
+            Replica[(MySQL Replica\nRead Replica)]
+            Redis[(Redis Cluster\nSession/Cache)]
+        end
+        
+        subgraph "STATIC ASSETS"
+            S3[S3 Bucket\nFrontend Build\nCloudFront CDN]
+        end
+        
+        subgraph "OBSERVABILITY"
+            Prometheus[Prometheus\nMetrics]
+            Grafana[Grafana\nDashboards]
+            Loki[Loki\nLogs]
+            AlertManager[AlertManager\nPagerDuty/Slack]
+        end
+    end
+    
+    Client[🌐 Customers\n📱 Staff\n🛵 Partners] --> WAF
+    WAF --> LB
+    LB --> APP1
+    LB --> APP2
+    LB --> APP3
+    APP1 --> Primary
+    APP2 --> Primary
+    APP3 --> Primary
+    APP1 --> Redis
+    APP2 --> Redis
+    APP3 --> Redis
+    Primary --> Replica
+    LB -->|Static Files| S3
+    APP1 --> Prometheus
+    APP2 --> Prometheus
+    APP3 --> Prometheus
+    APP1 --> Loki
+    APP2 --> Loki
+    APP3 --> Loki
+```
+
+## Data Flow Summary
+
+| Flow | Protocol | Frequency | Data Volume |
+|------|----------|-----------|-------------|
+| Menu Browse | REST/JSON | High (per session) | ~50 items × 1KB |
+| Cart Operations | REST/JSON | Medium | ~1-10 items |
+| Order Creation | REST/JSON | Low (per order) | ~5KB |
+| Order Status Poll | REST/JSON | Every 5-10s | ~2KB |
+| Location Updates | REST/JSON | Every 5-10s (delivery) | ~500B |
+| Payment Webhook | HTTPS/JSON | Per payment | ~2KB |
+
+## Security Boundaries
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     TRUST BOUNDARIES                            │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  INTERNET                                                       │
+│       │                                                         │
+│       ▼                                                         │
+│  ┌─────────────┐    TLS 1.2+     ┌─────────────────────────┐   │
+│  │   CLIENT    │ ◄─────────────► │      NGINX / LB         │   │
+│  │  (Browser)  │                 │  SSL Termination        │   │
+│  └─────────────┘                 │  CORS Enforcement       │   │
+│       │                          │  Rate Limiting          │   │
+│       │ JWT in Header            └───────────┬─────────────┘   │
+│       ▼                                     │                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │                  SPRING BOOT APPLICATION                 │   │
+│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐   │   │
+│  │  │ JwtFilter    │  │ Controllers  │  │ Services     │   │
+│  │  │ (AuthN/AuthZ)│──►│ (Validation) │──►│ (Business)   │   │
+│  │  └──────────────┘  └──────────────┘  └──────┬───────┘   │   │
+│  │                                              │            │   │
+│  │                                              ▼            │   │
+│  │  ┌────────────────────────────────────────────────────┐  │   │
+│  │  │              REPOSITORIES (JPA)                    │  │   │
+│  │  └────────────────────────┬──────────────────────────┘  │   │
+│  └───────────────────────────│──────────────────────────────┘   │
+│                              │                                    │
+│                              ▼                                    │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │                    MYSQL DATABASE                         │   │
+│  │  • FK Constraints  • Check Constraints  • Indexes        │   │
+│  │  • Encrypted at rest  • Backup/Replication               │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```

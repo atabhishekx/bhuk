@@ -1,0 +1,71 @@
+# Use Case Diagram
+
+```mermaid
+useCaseDiagram
+    package "Bhuk Food Delivery System" {
+        actor Customer
+        actor "Restaurant Staff" as Staff
+        actor "Delivery Partner" as Partner
+        actor Administrator
+        actor "Payment Gateway" as Payment
+
+        usecase "UC-01: Browse Menu" as UC1
+        usecase "UC-02: Manage Cart" as UC2
+        usecase "UC-03: Place Order" as UC3
+        usecase "UC-04: Track Order" as UC4
+        usecase "UC-05: View Order History" as UC5
+        usecase "UC-06: Manage Addresses" as UC6
+        usecase "UC-07: Login/Register" as UC7
+
+        usecase "UC-08: Process Orders" as UC8
+        usecase "UC-09: Update Order Status" as UC9
+        usecase "UC-10: View Order Queue" as UC10
+
+        usecase "UC-11: Accept Delivery" as UC11
+        usecase "UC-12: Update Location" as UC12
+        usecase "UC-13: Mark Picked Up" as UC13
+        usecase "UC-14: Mark Delivered" as UC14
+        usecase "UC-15: Report Issue" as UC15
+        usecase "UC-16: Set Availability" as UC16
+
+        usecase "UC-17: Manage Menu" as UC17
+        usecase "UC-18: Manage Users" as UC18
+        usecase "UC-19: Manage Outlets" as UC19
+        usecase "UC-20: View Reports" as UC20
+        usecase "UC-21: Assign Roles" as UC21
+
+        usecase "UC-22: Process Payment" as UC22
+        usecase "UC-23: Payment Webhook" as UC23
+    }
+
+    Customer --> UC1
+    Customer --> UC2
+    Customer --> UC3
+    Customer --> UC4
+    Customer --> UC5
+    Customer --> UC6
+    Customer --> UC7
+
+    Staff --> UC8
+    Staff --> UC9
+    Staff --> UC10
+
+    Partner --> UC11
+    Partner --> UC12
+    Partner --> UC13
+    Partner --> UC14
+    Partner --> UC15
+    Partner --> UC16
+
+    Administrator --> UC17
+    Administrator --> UC18
+    Administrator --> UC19
+    Administrator --> UC20
+    Administrator --> UC21
+
+    Payment --> UC22
+    Payment --> UC23
+
+    UC3 --> UC22 : <<include>>
+    UC8 ..> UC11 : <<extend>> (when READY_FOR_PICKUP)
+```

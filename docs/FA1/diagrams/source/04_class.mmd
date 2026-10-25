@@ -1,0 +1,967 @@
+# Backend Class Diagram
+
+```mermaid
+classDiagram
+    %% ============ CONFIG & SECURITY ============
+    class WebConfig {
+        +addCorsMappings(CorsRegistry)
+    }
+    
+    class SecurityConfig {
+        -JwtUtil jwtUtil
+        -CustomUserDetailsService userDetailsService
+        +PasswordEncoder passwordEncoder()
+        +AuthenticationManager authenticationManager()
+        +SecurityFilterChain filterChain(HttpSecurity, AuthenticationManager)
+    }
+    
+    class JwtUtil {
+        -String secret
+        -Long expirationMs
+        +String generateToken(UserDetails)
+        +String extractUsername(String)
+        +Boolean validateToken(String, UserDetails)
+        +Claims extractAllClaims(String)
+    }
+    
+    class JwtAuthenticationFilter {
+        -JwtUtil jwtUtil
+        -CustomUserDetailsService userDetailsService
+        +doFilterInternal(HttpServletRequest, HttpServletResponse, FilterChain)
+    }
+    
+    class CustomUserDetailsService {
+        -UserRepository userRepository
+        +loadUserByUsername(String) UserDetails
+    }
+    
+    class UserDetailsImpl {
+        +Long id
+        +String email
+        +String password
+        +Collection~GrantedAuthority~ authorities
+        +Boolean isEnabled
+    }
+    
+    %% ============ AUTH MODULE ============
+    class AuthController {
+        -AuthService authService
+        +login(AuthRequest) ResponseEntity~ApiResponse~AuthResponse~~
+        +register(RegisterRequest) ResponseEntity~ApiResponse~Void~~
+    }
+    
+    class AdminUserController {
+        -UserService userService
+        +assignRole(AssignRoleRequest) ResponseEntity~ApiResponse~Void~~
+        +listUsers() ResponseEntity~ApiResponse~List~UserProfileResponse~~
+    }
+    
+    class AuthService {
+        -UserRepository userRepository
+        -PasswordEncoder passwordEncoder
+        -JwtUtil jwtUtil
+        +AuthResponse login(AuthRequest)
+        +Void register(RegisterRequest)
+    }
+    
+    class UserService {
+        -UserRepository userRepository
+        -UserRoleRepository userRoleRepository
+        -OutletRepository outletRepository
+        +UserProfileResponse getProfile(String email)
+        +Void assignRole(AssignRoleRequest)
+        +List~UserProfileResponse~ listUsers()
+    }
+    
+    %% Auth Entities
+    class User {
+        @Id @GeneratedValue Long id
+        @Column(unique) String email
+        String password
+        String name
+        String phone
+        String status
+        Instant createdAt
+        Instant updatedAt
+        List~UserRole~ roles
+        List~UserAddress~ addresses
+        Cart cart
+    }
+    
+    class UserRole {
+        @Id @GeneratedValue Long id
+        @ManyToOne User user
+        String role  "ADMIN|USER|OUTLET_STAFF|DELIVERY_GUY"
+        @ManyToOne Outlet outlet
+        Instant createdAt
+    }
+    
+    class UserAddress {
+        @Id @GeneratedValue Long id
+        @ManyToOne User user
+        String label
+        String fullAddress
+        String city
+        String state
+        String pincode
+        String phone
+        Boolean isDefault
+        BigDecimal latitude
+        BigDecimal longitude
+    }
+    
+    class Outlet {
+        @Id @GeneratedValue Long id
+        String name
+        String address
+        String city
+        String state
+        String pincode
+        BigDecimal latitude
+        BigDecimal longitude
+        String timezone
+        String phone
+        String status
+        Instant createdAt
+        Instant updatedAt
+        List~OutletHours~ hours
+        List~MenuCategory~ categories
+        List~ModifierGroup~ modifierGroups
+    }
+    
+    %% Auth DTOs
+    class AuthRequest {
+        @NotBlank @Email String email
+        @NotBlank @Size(min=6) String password
+    }
+    
+    class AuthResponse {
+        String token
+        UserProfileResponse user
+    }
+    
+    class RegisterRequest {
+        @NotBlank @Email String email
+        @NotBlank @Size(min=6) String password
+        @NotBlank String name
+        String phone
+        String role
+    }
+    
+    class UserProfileResponse {
+        Long id
+        String email
+        String name
+        String phone
+        List~String~ roles
+    }
+    
+    class AssignRoleRequest {
+        @NotNull Long userId
+        @NotBlank String role
+        Long outletId
+    }
+    
+    %% ============ MENU MODULE ============
+    class MenuController {
+        -MenuService menuService
+        +listCategories(Long outletId) ResponseEntity~ApiResponse~List~CategoryResponse~~
+        +listItems(Long outletId, Long categoryId) ResponseEntity~ApiResponse~List~ItemResponse~~
+        +getItem(Long itemId, Long outletId) ResponseEntity~ApiResponse~ItemResponse~~
+        +checkServiceability(String pincode, Long outletId) ResponseEntity~ApiResponse~ServiceabilityResponse~~
+        +createCategory(Long outletId, CategoryRequest) ResponseEntity~ApiResponse~CategoryResponse~~
+        +updateCategory(Long categoryId, Long outletId, CategoryRequest) ResponseEntity~ApiResponse~CategoryResponse~~
+        +deleteCategory(Long categoryId) ResponseEntity~ApiResponse~Void~~
+        +createItem(Long outletId, ItemRequest) ResponseEntity~ApiResponse~ItemResponse~~
+        +updateItem(Long itemId, Long outletId, ItemRequest) ResponseEntity~ApiResponse~ItemResponse~~
+        +deleteItem(Long itemId) ResponseEntity~ApiResponse~Void~~
+        +createModifierGroup(Long outletId, ModifierGroupRequest) ResponseEntity~ApiResponse~ModifierGroupResponse~~
+        +updateModifierGroup(Long groupId, Long outletId, ModifierGroupRequest) ResponseEntity~ApiResponse~ModifierGroupResponse~~
+        +deleteModifierGroup(Long groupId) ResponseEntity~ApiResponse~Void~~
+        +createModifierOption(Long groupId, ModifierOptionRequest) ResponseEntity~ApiResponse~ModifierOptionResponse~~
+        +updateModifierOption(Long optionId, ModifierOptionRequest) ResponseEntity~ApiResponse~ModifierOptionResponse~~
+        +deleteModifierOption(Long optionId) ResponseEntity~ApiResponse~Void~~
+    }
+    
+    class MenuService {
+        -MenuCategoryRepository categoryRepo
+        -MenuItemRepository itemRepo
+        -ModifierGroupRepository mgRepo
+        -ModifierOptionRepository moRepo
+        -OutletItemAvailabilityRepository oiaRepo
+        +List~CategoryResponse~ listCategories(Long outletId)
+        +List~ItemResponse~ listItems(Long outletId, Long categoryId)
+        +ItemResponse getItem(Long itemId, Long outletId)
+        +ServiceabilityResponse checkServiceability(String pincode, Long outletId)
+        +CategoryResponse createCategory(Long outletId, CategoryRequest)
+        +CategoryResponse updateCategory(Long categoryId, Long outletId, CategoryRequest)
+        +Void deleteCategory(Long categoryId)
+        +ItemResponse createItem(Long outletId, ItemRequest)
+        +ItemResponse updateItem(Long itemId, Long outletId, ItemRequest)
+        +Void deleteItem(Long itemId)
+        +ModifierGroupResponse createModifierGroup(Long outletId, ModifierGroupRequest)
+        +ModifierGroupResponse updateModifierGroup(Long groupId, Long outletId, ModifierGroupRequest)
+        +Void deleteModifierGroup(Long groupId)
+        +ModifierOptionResponse createModifierOption(Long groupId, ModifierOptionRequest)
+        +ModifierOptionResponse updateModifierOption(Long optionId, ModifierOptionRequest)
+        +Void deleteModifierOption(Long optionId)
+    }
+    
+    %% Menu Entities
+    class MenuCategory {
+        @Id @GeneratedValue Long id
+        @ManyToOne Outlet outlet
+        String name
+        String description
+        Integer displayOrder
+        Boolean active
+        Instant createdAt
+        Instant updatedAt
+        List~MenuItem~ items
+    }
+    
+    class MenuItem {
+        @Id @GeneratedValue Long id
+        @ManyToOne MenuCategory category
+        String name
+        String description
+        Integer basePriceMinor
+        String imageUrl
+        String dietaryType
+        Boolean active
+        Boolean available
+        Instant createdAt
+        Instant updatedAt
+        List~ItemModifierGroup~ modifierGroups
+        List~OutletItemAvailability~ outletAvailability
+    }
+    
+    class ModifierGroup {
+        @Id @GeneratedValue Long id
+        @ManyToOne Outlet outlet
+        String name
+        Integer minSelect
+        Integer maxSelect
+        Boolean required
+        Boolean active
+        Instant createdAt
+        Instant updatedAt
+        List~ModifierOption~ options
+        List~ItemModifierGroup~ items
+    }
+    
+    class ModifierOption {
+        @Id @GeneratedValue Long id
+        @ManyToOne ModifierGroup group
+        String name
+        Integer priceDeltaMinor
+        Boolean active
+        Instant createdAt
+        Instant updatedAt
+    }
+    
+    class ItemModifierGroup {
+        @EmbeddedId ItemModifierGroupId id
+        @ManyToOne MenuItem item
+        @ManyToOne ModifierGroup modifierGroup
+    }
+    
+    class ItemModifierGroupId {
+        Long itemId
+        Long modifierGroupId
+    }
+    
+    class OutletItemAvailability {
+        @EmbeddedId OutletItemAvailabilityId id
+        @ManyToOne Outlet outlet
+        @ManyToOne MenuItem item
+        Boolean available
+        Integer priceOverrideMinor
+    }
+    
+    class OutletItemAvailabilityId {
+        Long outletId
+        Long itemId
+    }
+    
+    %% Menu DTOs
+    class CategoryRequest {
+        @NotBlank String name
+        String description
+        Integer displayOrder
+    }
+    
+    class CategoryResponse {
+        Long id
+        String name
+        String description
+        Integer displayOrder
+        Boolean active
+    }
+    
+    class ItemRequest {
+        @NotNull Long categoryId
+        @NotBlank String name
+        String description
+        @NotNull @Min(0) Integer basePriceMinor
+        String imageUrl
+        String dietaryType
+        Boolean active
+        Boolean available
+        List~Long~ modifierGroupIds
+    }
+    
+    class ItemResponse {
+        Long id
+        Long categoryId
+        String categoryName
+        String name
+        String description
+        Integer basePriceMinor
+        String imageUrl
+        String dietaryType
+        Boolean active
+        Boolean available
+        List~ModifierGroupResponse~ modifierGroups
+    }
+    
+    class ModifierGroupRequest {
+        @NotBlank String name
+        @Min(0) Integer minSelect
+        @Min(0) Integer maxSelect
+        Boolean required
+    }
+    
+    class ModifierGroupResponse {
+        Long id
+        String name
+        Integer minSelect
+        Integer maxSelect
+        Boolean required
+        Boolean active
+        List~ModifierOptionResponse~ options
+    }
+    
+    class ModifierOptionRequest {
+        @NotBlank String name
+        @Min(0) Integer priceDeltaMinor
+    }
+    
+    class ModifierOptionResponse {
+        Long id
+        Long groupId
+        String name
+        Integer priceDeltaMinor
+        Boolean active
+    }
+    
+    class ServiceabilityResponse {
+        Boolean serviceable
+        String message
+        Long outletId
+    }
+    
+    %% ============ CART MODULE ============
+    class CartController {
+        -CartService cartService
+        +getCart(UserDetails) ResponseEntity~ApiResponse~CartResponse~~
+        +addToCart(UserDetails, AddToCartRequest) ResponseEntity~ApiResponse~CartResponse~~
+        +updateQuantity(UserDetails, Long cartItemId, Integer) ResponseEntity~ApiResponse~CartResponse~~
+        +removeItem(UserDetails, Long cartItemId) ResponseEntity~ApiResponse~CartResponse~~
+        +clearCart(UserDetails) ResponseEntity~ApiResponse~CartResponse~~
+        +checkoutQuote(UserDetails) ResponseEntity~ApiResponse~CheckoutQuoteResponse~~
+    }
+    
+    class CartService {
+        -CartRepository cartRepo
+        -CartItemRepository itemRepo
+        -CartItemModifierRepository modRepo
+        -MenuItemRepository menuItemRepo
+        -ModifierOptionRepository modOptRepo
+        -UserRepository userRepo
+        +CartResponse getCart(String email)
+        +CartResponse addToCart(String email, AddToCartRequest)
+        +CartResponse updateCartItemQuantity(String email, Long cartItemId, Integer quantity)
+        +CartResponse removeCartItem(String email, Long cartItemId)
+        +CartResponse clearCart(String email)
+        +CheckoutQuoteResponse quote(String email)
+    }
+    
+    %% Cart Entities
+    class Cart {
+        @Id @GeneratedValue Long id
+        @OneToOne User customer
+        @ManyToOne Outlet outlet
+        Instant updatedAt
+        List~CartItem~ items
+    }
+    
+    class CartItem {
+        @Id @GeneratedValue Long id
+        @ManyToOne Cart cart
+        @ManyToOne MenuItem item
+        Integer quantity
+        String instructions
+        Instant createdAt
+        Instant updatedAt
+        List~CartItemModifier~ modifiers
+    }
+    
+    class CartItemModifier {
+        @Id @GeneratedValue Long id
+        @ManyToOne CartItem cartItem
+        @ManyToOne ModifierOption modifierOption
+        Integer quantity
+    }
+    
+    %% Cart DTOs
+    class AddToCartRequest {
+        @NotNull Long itemId
+        @NotNull @Min(1) Integer quantity
+        List~Long~ modifierOptionIds
+    }
+    
+    class CartResponse {
+        Long id
+        Long outletId
+        List~CartItemResponse~ items
+        Integer itemCount
+        Integer subtotalMinor
+        Integer taxMinor
+        Integer deliveryFeeMinor
+        Integer grandTotalMinor
+    }
+    
+    class CartItemResponse {
+        Long id
+        Long itemId
+        String itemName
+        Integer quantity
+        Integer unitPriceMinor
+        Integer lineTotalMinor
+        String instructions
+        List~CartItemModifierResponse~ modifiers
+    }
+    
+    class CartItemModifierResponse {
+        Long id
+        Long modifierOptionId
+        String modifierName
+        Integer priceDeltaMinor
+        Integer quantity
+    }
+    
+    class CheckoutQuoteResponse {
+        Integer subtotalMinor
+        Integer taxMinor
+        Integer deliveryFeeMinor
+        Integer grandTotalMinor
+        Integer itemCount
+    }
+    
+    %% ============ ORDER MODULE ============
+    class OrderController {
+        -OrderService orderService
+        -DeliveryService deliveryService
+        +createOrder(UserDetails, CreateOrderRequest) ResponseEntity~ApiResponse~OrderResponse~~
+        +listOrders(UserDetails) ResponseEntity~ApiResponse~List~OrderResponse~~
+        +getOrder(UserDetails, Long orderId) ResponseEntity~ApiResponse~OrderResponse~~
+        +cancelOrder(UserDetails, Long orderId, String reason) ResponseEntity~ApiResponse~OrderResponse~~
+        +staffAcceptOrder(UserDetails, Long orderId) ResponseEntity~ApiResponse~OrderResponse~~
+        +staffRejectOrder(UserDetails, Long orderId, String reason) ResponseEntity~ApiResponse~OrderResponse~~
+        +staffAdvanceStatus(UserDetails, Long orderId, String newStatus, String reason) ResponseEntity~ApiResponse~OrderResponse~~
+        +staffHandoff(UserDetails, Long orderId, String reason) ResponseEntity~ApiResponse~OrderResponse~~
+        +listStaffOrders(UserDetails, String status) ResponseEntity~ApiResponse~List~OrderResponse~~
+        +listAdminOrders(UserDetails, String status, Long outletId, String q) ResponseEntity~ApiResponse~List~OrderResponse~~
+        +operationsReport(UserDetails, Long outletId) ResponseEntity~ApiResponse~OperationsReportResponse~~
+    }
+    
+    class OrderService {
+        -OrderRepository orderRepo
+        -OrderItemRepository itemRepo
+        -OrderItemModifierRepository modRepo
+        -OrderStatusEventRepository eventRepo
+        -IdempotencyRecordRepository idemRepo
+        -CartRepository cartRepo
+        -MenuItemRepository menuItemRepo
+        -ModifierOptionRepository modOptRepo
+        -UserRepository userRepo
+        -OutletRepository outletRepo
+        -OrderNumberGenerator orderNumberGen
+        +OrderResponse createOrder(String email, CreateOrderRequest)
+        +List~OrderResponse~ listOrders(String email)
+        +OrderResponse getOrder(String email, Long orderId)
+        +OrderResponse cancelOrder(String email, Long orderId, String reason)
+        +OrderResponse staffAcceptOrder(String email, Long orderId)
+        +OrderResponse staffRejectOrder(String email, Long orderId, String reason)
+        +OrderResponse staffAdvanceStatus(String email, Long orderId, String newStatus, String reason)
+        +OrderResponse staffHandoff(String email, Long orderId, String reason)
+        +List~OrderResponse~ listStaffOrders(String email, String status)
+        +List~OrderResponse~ listAdminOrders(String email, String status, Long outletId, String q)
+        +OperationsReportResponse operationsReport(String email, Long outletId)
+        -Void validateTransition(String oldStatus, String newStatus)
+        -Void createStatusEvent(Long orderId, String oldStatus, String newStatus, Long actorId, String actorRole, String reason)
+    }
+    
+    class OrderNumberGenerator {
+        +String generate()
+    }
+    
+    %% Order Entities
+    class Order {
+        @Id @GeneratedValue Long id
+        @Column(unique) String orderNumber
+        @ManyToOne User customer
+        @ManyToOne Outlet outlet
+        @Enumerated(STRING) OrderStatus status
+        Integer subtotalMinor
+        Integer taxMinor
+        Integer deliveryFeeMinor
+        Integer grandTotalMinor
+        String deliveryAddressJson
+        String idempotencyKey
+        Instant createdAt
+        Instant updatedAt
+        List~OrderItem~ items
+        List~OrderStatusEvent~ statusEvents
+        Payment payment
+        DeliveryAssignment deliveryAssignment
+    }
+    
+    class OrderItem {
+        @Id @GeneratedValue Long id
+        @ManyToOne Order order
+        @ManyToOne MenuItem item
+        String itemNameSnapshot
+        Integer quantity
+        Integer unitPriceMinor
+        Integer lineTotalMinor
+        String instructions
+        List~OrderItemModifier~ modifiers
+    }
+    
+    class OrderItemModifier {
+        @Id @GeneratedValue Long id
+        @ManyToOne OrderItem orderItem
+        String nameSnapshot
+        Integer priceDeltaMinor
+        Integer quantity
+    }
+    
+    class OrderStatusEvent {
+        @Id @GeneratedValue Long id
+        @ManyToOne Order order
+        String oldStatus
+        String newStatus
+        @ManyToOne User actor
+        String actorRole
+        String reason
+        Instant createdAt
+    }
+    
+    class IdempotencyRecord {
+        @Id String recordKey
+        @ManyToOne User actor
+        String operation
+        String requestHash
+        Integer responseStatus
+        String responseBody
+        Instant createdAt
+        Instant expiresAt
+    }
+    
+    %% Order DTOs
+    class CreateOrderRequest {
+        @NotBlank @Size(max=128) String idempotencyKey
+        @Valid @NotNull DeliveryAddressRequest deliveryAddress
+        @NotBlank String deliveryAddressJson
+    }
+    
+    class DeliveryAddressRequest {
+        @NotBlank String fullAddress
+        @NotBlank String city
+        @NotBlank String state
+        @NotBlank String pincode
+        @NotBlank String phone
+    }
+    
+    class OrderResponse {
+        Long id
+        String orderNumber
+        String status
+        Integer subtotalMinor
+        Integer taxMinor
+        Integer deliveryFeeMinor
+        Integer grandTotalMinor
+        String deliveryAddressJson
+        Instant createdAt
+        Instant updatedAt
+        List~OrderItemResponse~ items
+        List~OrderStatusEventResponse~ statusEvents
+    }
+    
+    class OrderItemResponse {
+        Long id
+        Long itemId
+        String itemName
+        Integer quantity
+        Integer unitPriceMinor
+        Integer lineTotalMinor
+        String instructions
+        List~OrderItemModifierResponse~ modifiers
+    }
+    
+    class OrderItemModifierResponse {
+        Long id
+        String name
+        Integer priceDeltaMinor
+        Integer quantity
+    }
+    
+    class OrderStatusEventResponse {
+        Long id
+        String oldStatus
+        String newStatus
+        Long actorId
+        String actorName
+        String actorRole
+        String reason
+        Instant createdAt
+    }
+    
+    class OperationsReportResponse {
+        Long totalOrders
+        Long deliveredOrders
+        Long cancelledOrders
+        Integer totalRevenueMinor
+        Double avgDeliveryTimeMinutes
+    }
+    
+    %% ============ DELIVERY MODULE ============
+    class DeliveryController {
+        -DeliveryService deliveryService
+        +getAvailableOrders(UserDetails) ResponseEntity~ApiResponse~List~DeliveryAssignmentResponse~~
+        +assignOrder(UserDetails, AssignPartnerRequest) ResponseEntity~ApiResponse~DeliveryAssignmentResponse~~
+        +markPickup(UserDetails, Long orderId) ResponseEntity~ApiResponse~DeliveryAssignmentResponse~~
+        +markDelivered(UserDetails, Long orderId) ResponseEntity~ApiResponse~DeliveryAssignmentResponse~~
+        +updateLocation(UserDetails, Long orderId, UpdateLocationRequest) ResponseEntity~ApiResponse~DeliveryTrackingResponse~~
+        +setAvailability(UserDetails, SetAvailabilityRequest) ResponseEntity~ApiResponse~DeliveryPartnerResponse~~
+        +reportIssue(UserDetails, ReportIssueRequest) ResponseEntity~ApiResponse~DeliveryIssueResponse~~
+        +getOrderTracking(UserDetails, Long orderId) ResponseEntity~ApiResponse~OrderTrackingResponse~~
+    }
+    
+    class DeliveryService {
+        -DeliveryPartnerRepository partnerRepo
+        -DeliveryAssignmentRepository assignRepo
+        -DeliveryIssueRepository issueRepo
+        -DeliveryTrackingRepository trackingRepo
+        -OrderRepository orderRepo
+        -UserRepository userRepo
+        +List~DeliveryAssignmentResponse~ getAvailableOrders(String email)
+        +DeliveryAssignmentResponse assignOrder(String email, AssignPartnerRequest)
+        +DeliveryAssignmentResponse markPickup(String email, Long orderId)
+        +DeliveryAssignmentResponse markDelivered(String email, Long orderId)
+        +DeliveryTrackingResponse updateLocation(String email, Long orderId, UpdateLocationRequest)
+        +DeliveryPartnerResponse setAvailability(String email, SetAvailabilityRequest)
+        +DeliveryIssueResponse reportIssue(String email, ReportIssueRequest)
+        +OrderTrackingResponse getOrderTracking(String email, Long orderId)
+        +Void createOfferForOrder(Long orderId)
+    }
+    
+    %% Delivery Entities
+    class DeliveryPartner {
+        @Id @GeneratedValue Long id
+        @OneToOne User user
+        @ManyToOne Outlet outlet
+        String vehicleType
+        String vehicleNumber
+        String licenseNumber
+        @Enumerated(STRING) DeliveryPartnerStatus status
+        BigDecimal currentLatitude
+        BigDecimal currentLongitude
+        Instant lastLocationUpdate
+        Instant createdAt
+        Instant updatedAt
+    }
+    
+    class DeliveryAssignment {
+        @Id @GeneratedValue Long id
+        @OneToOne Order order
+        @ManyToOne DeliveryPartner partner
+        @Enumerated(STRING) DeliveryAssignmentStatus status
+        Instant assignedAt
+        Instant acceptedAt
+        Instant pickedUpAt
+        Instant deliveredAt
+        Instant createdAt
+        Instant updatedAt
+        List~DeliveryTracking~ tracking
+        List~DeliveryIssue~ issues
+    }
+    
+    class DeliveryTracking {
+        @Id @GeneratedValue Long id
+        @ManyToOne DeliveryAssignment assignment
+        BigDecimal latitude
+        BigDecimal longitude
+        Instant recordedAt
+    }
+    
+    class DeliveryIssue {
+        @Id @GeneratedValue Long id
+        @ManyToOne DeliveryAssignment assignment
+        @ManyToOne DeliveryPartner reportedByPartner
+        String issueType
+        String description
+        Boolean resolved
+        Instant createdAt
+        Instant resolvedAt
+    }
+    
+    %% Delivery DTOs
+    class AssignPartnerRequest {
+        Long orderId
+    }
+    
+    class UpdateLocationRequest {
+        @NotNull BigDecimal latitude
+        @NotNull BigDecimal longitude
+    }
+    
+    class SetAvailabilityRequest {
+        @NotNull Boolean available
+    }
+    
+    class ReportIssueRequest {
+        @NotNull Long orderId
+        @NotBlank String issueType
+        String description
+    }
+    
+    class DeliveryPartnerResponse {
+        Long id
+        String name
+        String phone
+        String status
+        BigDecimal latitude
+        BigDecimal longitude
+    }
+    
+    class DeliveryAssignmentResponse {
+        Long id
+        Long orderId
+        String orderNumber
+        String status
+        String customerName
+        String customerPhone
+        String deliveryAddressJson
+        Instant assignedAt
+    }
+    
+    class DeliveryTrackingResponse {
+        Long id
+        Long assignmentId
+        BigDecimal latitude
+        BigDecimal longitude
+        Instant recordedAt
+    }
+    
+    class OrderTrackingResponse {
+        String orderNumber
+        String status
+        DeliveryPartnerResponse partner
+        List~DeliveryTrackingResponse~ tracking
+        Instant estimatedDelivery
+    }
+    
+    %% ============ COMMON ============
+    class ApiResponse~T~ {
+        Boolean success
+        T data
+        String message
+        String requestId
+        +static <T> ApiResponse<T> success(T)
+        +static <T> ApiResponse<T> success(T, String)
+        +static ApiResponse<Void> ok(String)
+    }
+    
+    class ErrorResponse {
+        String code
+        String message
+        Map<String, String> details
+        String requestId
+    }
+    
+    class GlobalExceptionHandler {
+        +handleValidation(ValidationException) ResponseEntity~ApiResponse~ErrorResponse~~
+        +handleNotFound(NotFoundException) ResponseEntity~ApiResponse~ErrorResponse~~
+        +handleConflict(ConflictException) ResponseEntity~ApiResponse~ErrorResponse~~
+        +handleException(Exception) ResponseEntity~ApiResponse~ErrorResponse~~
+    }
+    
+    %% ============ RELATIONSHIPS ============
+    SecurityConfig --> JwtUtil
+    SecurityConfig --> CustomUserDetailsService
+    SecurityConfig --> JwtAuthenticationFilter
+    JwtAuthenticationFilter --> JwtUtil
+    JwtAuthenticationFilter --> CustomUserDetailsService
+    CustomUserDetailsService --> UserRepository
+    UserDetailsImpl --|> UserDetails
+    
+    AuthController --> AuthService
+    AdminUserController --> UserService
+    AuthService --> UserRepository
+    AuthService --> PasswordEncoder
+    AuthService --> JwtUtil
+    UserService --> UserRepository
+    UserService --> UserRoleRepository
+    UserService --> OutletRepository
+    
+    MenuController --> MenuService
+    MenuService --> MenuCategoryRepository
+    MenuService --> MenuItemRepository
+    MenuService --> ModifierGroupRepository
+    MenuService --> ModifierOptionRepository
+    MenuService --> OutletItemAvailabilityRepository
+    
+    CartController --> CartService
+    CartService --> CartRepository
+    CartService --> CartItemRepository
+    CartService --> CartItemModifierRepository
+    CartService --> MenuItemRepository
+    CartService --> ModifierOptionRepository
+    CartService --> UserRepository
+    
+    OrderController --> OrderService
+    OrderController --> DeliveryService
+    OrderService --> OrderRepository
+    OrderService --> OrderItemRepository
+    OrderService --> OrderItemModifierRepository
+    OrderService --> OrderStatusEventRepository
+    OrderService --> IdempotencyRecordRepository
+    OrderService --> CartRepository
+    OrderService --> MenuItemRepository
+    OrderService --> ModifierOptionRepository
+    OrderService --> UserRepository
+    OrderService --> OutletRepository
+    OrderService --> OrderNumberGenerator
+    
+    DeliveryController --> DeliveryService
+    DeliveryService --> DeliveryPartnerRepository
+    DeliveryService --> DeliveryAssignmentRepository
+    DeliveryService --> DeliveryIssueRepository
+    DeliveryService --> DeliveryTrackingRepository
+    DeliveryService --> OrderRepository
+    DeliveryService --> UserRepository
+    
+    %% Entity Relationships
+    User "1" -- "*" UserRole
+    User "1" -- "1" Cart
+    User "1" -- "*" Order
+    User "1" -- "*" UserAddress
+    User "1" -- "1" DeliveryPartner
+    Outlet "1" -- "*" MenuCategory
+    Outlet "1" -- "*" ModifierGroup
+    Outlet "1" -- "*" Order
+    MenuCategory "1" -- "*" MenuItem
+    MenuItem "*" -- "*" ModifierGroup : ItemModifierGroup
+    ModifierGroup "1" -- "*" ModifierOption
+    Cart "1" -- "*" CartItem
+    CartItem "1" -- "*" CartItemModifier
+    CartItem "*" -- "1" MenuItem
+    CartItemModifier "*" -- "1" ModifierOption
+    Order "1" -- "*" OrderItem
+    Order "1" -- "*" OrderStatusEvent
+    Order "1" -- "1" Payment
+    Order "1" -- "1" DeliveryAssignment
+    OrderItem "1" -- "*" OrderItemModifier
+    OrderItem "*" -- "1" MenuItem : snapshot
+    Payment "1" -- "*" Refund
+    DeliveryPartner "1" -- "*" DeliveryAssignment
+    DeliveryAssignment "1" -- "*" DeliveryTracking
+    DeliveryAssignment "1" -- "*" DeliveryIssue
+    
+    %% DTO usage
+    AuthController ..> AuthRequest
+    AuthController ..> AuthResponse
+    AuthController ..> RegisterRequest
+    AdminUserController ..> AssignRoleRequest
+    MenuController ..> CategoryRequest
+    MenuController ..> CategoryResponse
+    MenuController ..> ItemRequest
+    MenuController ..> ItemResponse
+    MenuController ..> ModifierGroupRequest
+    MenuController ..> ModifierGroupResponse
+    MenuController ..> ModifierOptionRequest
+    MenuController ..> ModifierOptionResponse
+    MenuController ..> ServiceabilityResponse
+    CartController ..> AddToCartRequest
+    CartController ..> CartResponse
+    CartController ..> CartItemResponse
+    CartController ..> CartItemModifierResponse
+    CartController ..> CheckoutQuoteResponse
+    OrderController ..> CreateOrderRequest
+    OrderController ..> DeliveryAddressRequest
+    OrderController ..> OrderResponse
+    OrderController ..> OrderItemResponse
+    OrderController ..> OrderItemModifierResponse
+    OrderController ..> OrderStatusEventResponse
+    OrderController ..> OperationsReportResponse
+    DeliveryController ..> AssignPartnerRequest
+    DeliveryController ..> UpdateLocationRequest
+    DeliveryController ..> SetAvailabilityRequest
+    DeliveryController ..> ReportIssueRequest
+    DeliveryController ..> DeliveryPartnerResponse
+    DeliveryController ..> DeliveryAssignmentResponse
+    DeliveryController ..> DeliveryTrackingResponse
+    DeliveryController ..> OrderTrackingResponse
+    
+    %% Common
+    AuthController ..> ApiResponse
+    MenuController ..> ApiResponse
+    CartController ..> ApiResponse
+    OrderController ..> ApiResponse
+    DeliveryController ..> ApiResponse
+    AdminUserController ..> ApiResponse
+    GlobalExceptionHandler ..> ErrorResponse
+```
+
+### Key Design Patterns Used
+
+| Pattern | Classes | Purpose |
+|---------|---------|---------|
+| **Layered Architecture** | Controller → Service → Repository | Separation of concerns |
+| **DTO Pattern | *Request/*Response classes | API contract isolation |
+| **Repository Pattern** | *Repository interfaces | Data access abstraction |
+| **Builder Pattern** | Lombok `@Builder` on DTOs | Fluent object creation |
+| **Filter Pattern** | `JwtAuthenticationFilter` | Cross-cutting auth concern |
+| **Template Method** | `OrderService.validateTransition()` | State machine enforcement |
+| **Idempotency Pattern** | `IdempotencyRecord` + key on Order | Safe retries |
+| **Snapshot Pattern** | `OrderItem.itemNameSnapshot`, `OrderItemModifier.nameSnapshot` | Immutable order history |
+| **Audit Pattern** | `OrderStatusEvent` | Complete state change history |
+
+### Annotations Used
+
+| Annotation | Applied To | Purpose |
+|------------|------------|---------|
+| `@RestController` | Controllers | REST endpoint + JSON response |
+| `@RequestMapping` | Controllers | Base URL path |
+| `@GetMapping/@PostMapping/etc` | Controller methods | HTTP verb + path |
+| `@RequestParam` | Method params | Query parameters |
+| `@PathVariable` | Method params | URL path variables |
+| `@RequestBody` | Method params | JSON request body |
+| `@Valid` | Method params | Bean Validation trigger |
+| `@AuthenticationPrincipal` | Method params | Current authenticated user |
+| `@PreAuthorize` | Controller methods | Role-based access |
+| `@Service` | Services | Business logic component |
+| `@Transactional` | Service methods | Transaction boundary |
+| `@Repository` | Repositories | Data access component |
+| `@Entity` | Entities | JPA entity |
+| `@Table` | Entities | Table mapping |
+| `@Id`, `@GeneratedValue` | Entity fields | Primary key |
+| `@Column` | Entity fields | Column mapping |
+| `@ManyToOne`, `@OneToMany` | Entity fields | Relationships |
+| `@EmbeddedId` | Entity fields | Composite PK |
+| `@Enumerated(STRING)` | Entity fields | Enum as string |
+| `@PreUpdate` | Entity methods | Auto-set updatedAt |
+| `@NotNull`, `@NotBlank`, `@Size`, `@Min`, `@Email` | DTO fields | Validation |

@@ -1,0 +1,327 @@
+# ER Diagram (Database Schema)
+
+```mermaid
+erDiagram
+    USERS {
+        BIGINT id PK
+        VARCHAR email UK
+        VARCHAR password
+        VARCHAR name
+        VARCHAR phone
+        VARCHAR status
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+    
+    USER_ROLES {
+        BIGINT id PK
+        BIGINT user_id FK
+        VARCHAR role
+        BIGINT outlet_id FK
+        TIMESTAMP created_at
+    }
+    
+    OUTLETS {
+        BIGINT id PK
+        VARCHAR name
+        TEXT address
+        VARCHAR city
+        VARCHAR state
+        VARCHAR pincode
+        DECIMAL latitude
+        DECIMAL longitude
+        VARCHAR timezone
+        VARCHAR phone
+        VARCHAR status
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+    
+    OUTLET_HOURS {
+        BIGINT id PK
+        BIGINT outlet_id FK
+        TINYINT weekday
+        TIME open_time
+        TIME close_time
+    }
+    
+    MENU_CATEGORIES {
+        BIGINT id PK
+        BIGINT outlet_id FK
+        VARCHAR name
+        TEXT description
+        INT display_order
+        BOOLEAN active
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+    
+    MENU_ITEMS {
+        BIGINT id PK
+        BIGINT category_id FK
+        VARCHAR name
+        TEXT description
+        INT base_price_minor
+        VARCHAR image_url
+        VARCHAR dietary_type
+        BOOLEAN active
+        BOOLEAN available
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+    
+    MODIFIER_GROUPS {
+        BIGINT id PK
+        BIGINT outlet_id FK
+        VARCHAR name
+        INT min_select
+        INT max_select
+        BOOLEAN required
+        BOOLEAN active
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+    
+    MODIFIER_OPTIONS {
+        BIGINT id PK
+        BIGINT group_id FK
+        VARCHAR name
+        INT price_delta_minor
+        BOOLEAN active
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+    
+    ITEM_MODIFIER_GROUPS {
+        BIGINT item_id PK,FK
+        BIGINT modifier_group_id PK,FK
+    }
+    
+    OUTLET_ITEM_AVAILABILITY {
+        BIGINT outlet_id PK,FK
+        BIGINT item_id PK,FK
+        BOOLEAN available
+        INT price_override_minor
+    }
+    
+    CARTS {
+        BIGINT id PK
+        BIGINT customer_id FK UK
+        BIGINT outlet_id FK
+        TIMESTAMP updated_at
+    }
+    
+    CART_ITEMS {
+        BIGINT id PK
+        BIGINT cart_id FK
+        BIGINT item_id FK
+        INT quantity
+        VARCHAR instructions
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+    
+    CART_ITEM_MODIFIERS {
+        BIGINT id PK
+        BIGINT cart_item_id FK
+        BIGINT modifier_option_id FK
+        INT quantity
+    }
+    
+    ORDERS {
+        BIGINT id PK
+        VARCHAR order_number UK
+        BIGINT customer_id FK
+        BIGINT outlet_id FK
+        VARCHAR status
+        INT subtotal_minor
+        INT tax_minor
+        INT delivery_fee_minor
+        INT grand_total_minor
+        JSON delivery_address_json
+        VARCHAR idempotency_key UK
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+    
+    ORDER_ITEMS {
+        BIGINT id PK
+        BIGINT order_id FK
+        BIGINT item_id FK
+        VARCHAR item_name_snapshot
+        INT quantity
+        INT unit_price_minor
+        INT line_total_minor
+        VARCHAR instructions
+    }
+    
+    ORDER_ITEM_MODIFIERS {
+        BIGINT id PK
+        BIGINT order_item_id FK
+        VARCHAR name_snapshot
+        INT price_delta_minor
+        INT quantity
+    }
+    
+    ORDER_STATUS_EVENTS {
+        BIGINT id PK
+        BIGINT order_id FK
+        VARCHAR old_status
+        VARCHAR new_status
+        BIGINT actor_id FK
+        VARCHAR actor_role
+        VARCHAR reason
+        TIMESTAMP created_at
+    }
+    
+    PAYMENTS {
+        BIGINT id PK
+        BIGINT order_id FK
+        VARCHAR provider
+        VARCHAR provider_reference
+        INT amount_minor
+        VARCHAR status
+        VARCHAR method
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+    
+    REFUNDS {
+        BIGINT id PK
+        BIGINT payment_id FK
+        VARCHAR provider_reference
+        INT amount_minor
+        VARCHAR status
+        VARCHAR reason
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+    
+    IDEMPOTENCY_RECORDS {
+        VARCHAR record_key PK
+        BIGINT actor_id FK
+        VARCHAR operation
+        VARCHAR request_hash
+        INT response_status
+        JSON response_body
+        TIMESTAMP created_at
+        TIMESTAMP expires_at
+    }
+    
+    DELIVERY_PARTNERS {
+        BIGINT id PK
+        BIGINT user_id FK UK
+        BIGINT outlet_id FK
+        VARCHAR vehicle_type
+        VARCHAR vehicle_number
+        VARCHAR license_number
+        VARCHAR status
+        DECIMAL current_latitude
+        DECIMAL current_longitude
+        TIMESTAMP last_location_update
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+    
+    DELIVERY_ASSIGNMENTS {
+        BIGINT id PK
+        BIGINT order_id FK UK
+        BIGINT partner_id FK
+        VARCHAR status
+        TIMESTAMP assigned_at
+        TIMESTAMP accepted_at
+        TIMESTAMP picked_up_at
+        TIMESTAMP delivered_at
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+    
+    DELIVERY_TRACKING {
+        BIGINT id PK
+        BIGINT assignment_id FK
+        DECIMAL latitude
+        DECIMAL longitude
+        TIMESTAMP recorded_at
+    }
+    
+    DELIVERY_ISSUES {
+        BIGINT id PK
+        BIGINT assignment_id FK
+        BIGINT reported_by_partner_id FK
+        VARCHAR issue_type
+        TEXT description
+        BOOLEAN resolved
+        TIMESTAMP created_at
+        TIMESTAMP resolved_at
+    }
+    
+    USER_ADDRESSES {
+        BIGINT id PK
+        BIGINT user_id FK
+        VARCHAR label
+        TEXT full_address
+        VARCHAR city
+        VARCHAR state
+        VARCHAR pincode
+        VARCHAR phone
+        BOOLEAN is_default
+        DECIMAL latitude
+        DECIMAL longitude
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    %% Relationships
+    USERS ||--o{ USER_ROLES : "has"
+    USERS ||--o{ USER_ADDRESSES : "owns"
+    USERS ||--o{ CARTS : "owns"
+    USERS ||--o{ ORDERS : "places"
+    USERS ||--o{ ORDER_STATUS_EVENTS : "acts_in"
+    USERS ||--o{ IDEMPOTENCY_RECORDS : "generates"
+    USERS ||--o{ DELIVERY_PARTNERS : "works_as"
+    
+    OUTLETS ||--o{ USER_ROLES : "scopes"
+    OUTLETS ||--o{ OUTLET_HOURS : "has"
+    OUTLETS ||--o{ MENU_CATEGORIES : "owns"
+    OUTLETS ||--o{ MODIFIER_GROUPS : "owns"
+    OUTLETS ||--o{ ORDERS : "receives"
+    OUTLETS ||--o{ DELIVERY_PARTNERS : "employs"
+    OUTLETS ||--o{ OUTLET_ITEM_AVAILABILITY : "overrides"
+    
+    MENU_CATEGORIES ||--o{ MENU_ITEMS : "contains"
+    MENU_ITEMS }o--o{ MODIFIER_GROUPS : "links_via"
+    MODIFIER_GROUPS ||--o{ MODIFIER_OPTIONS : "has"
+    MENU_ITEMS }|--o{ OUTLET_ITEM_AVAILABILITY : "overridden_in"
+    
+    CARTS ||--o{ CART_ITEMS : "contains"
+    CART_ITEMS }o--o{ MODIFIER_OPTIONS : "selects_via"
+    MENU_ITEMS ||--o{ CART_ITEMS : "referenced_in"
+    
+    ORDERS ||--o{ ORDER_ITEMS : "contains"
+    ORDERS ||--o{ ORDER_STATUS_EVENTS : "audited_by"
+    ORDERS ||--o{ PAYMENTS : "paid_by"
+    ORDERS ||--o{ DELIVERY_ASSIGNMENTS : "delivered_by"
+    ORDER_ITEMS ||--o{ ORDER_ITEM_MODIFIERS : "has"
+    MENU_ITEMS ||--o{ ORDER_ITEMS : "snapshotted_as"
+    PAYMENTS ||--o{ REFUNDS : "refunded_by"
+    
+    DELIVERY_PARTNERS ||--o{ DELIVERY_ASSIGNMENTS : "assigned"
+    DELIVERY_ASSIGNMENTS ||--o{ DELIVERY_TRACKING : "tracked_by"
+    DELIVERY_ASSIGNMENTS ||--o{ DELIVERY_ISSUES : "has"
+```
+
+### Key Constraints Summary
+
+| Constraint Type | Tables | Details |
+|-----------------|--------|---------|
+| **Primary Keys** | All 22 tables | Auto-increment BIGINT (except composite PKs) |
+| **Foreign Keys** | 32 relationships | CASCADE/SET NULL/RESTRICT per semantics |
+| **Unique Constraints** | 8 | email, order_number, idempotency_key, user_role_outlet, outlet_weekday, payment_ref, outlet_item, cart_customer |
+| **Check Constraints** | 12 | Prices ≥ 0, quantities > 0, weekday 0-6, open<close, min≤max |
+| **Indexes** | 25 | FK columns, query patterns (status, created_at, customer_id) |
+
+### Money Storage Convention
+- **All monetary values**: `INT` in **paise** (1 INR = 100 paise)
+- Columns: `*_minor` suffix (base_price_minor, subtotal_minor, grand_total_minor, etc.)
+- **Display**: Divide by 100, format as ₹X.XX
+- **Calculation**: Server-side only, integer arithmetic

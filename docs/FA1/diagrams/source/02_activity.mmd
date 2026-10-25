@@ -1,0 +1,58 @@
+# Customer Ordering Activity Diagram
+
+```mermaid
+flowchart TD
+    Start([Customer opens app]) --> AuthCheck{Logged in?}
+    AuthCheck -- No --> Login[Login/Register]
+    Login --> AuthCheck
+    AuthCheck -- Yes --> BrowseMenu[Browse Menu\nGET /menu/categories\nGET /menu/items]
+    
+    BrowseMenu --> SelectItem[Select Item\nView details\nModifiers]
+    SelectItem --> AddToCart[Add to Cart\nPOST /cart/items]
+    
+    AddToCart --> CartCheck{More items?}
+    CartCheck -- Yes --> BrowseMenu
+    CartCheck -- No --> ViewCart[View Cart\nGET /cart]
+    
+    ViewCart --> CartActions{Action}
+    CartActions -- Update Qty --> UpdateQty[PUT /cart/items/{id}/quantity]
+    UpdateQty --> ViewCart
+    CartActions -- Remove Item --> RemoveItem[DELETE /cart/items/{id}]
+    RemoveItem --> ViewCart
+    CartActions -- Clear Cart --> ClearCart[DELETE /cart]
+    ClearCart --> BrowseMenu
+    CartActions -- Checkout --> Checkout[Proceed to Checkout]
+    
+    Checkout --> LoadQuote[Load Quote\nGET /cart/checkout/quote]
+    LoadQuote --> AddressForm[Enter Delivery Address]
+    
+    AddressForm --> ValidateAddress{Valid?}
+    ValidateAddress -- No --> AddressForm
+    ValidateAddress -- Yes --> GenerateIdem[Generate Idempotency Key]
+    
+    GenerateIdem --> PlaceOrder[Place Order\nPOST /orders\n{idempotencyKey, address}]
+    
+    PlaceOrder --> OrderResult{Success?}
+    OrderResult -- No: 409 Idempotent --> ShowExisting[Show Existing Order]
+    OrderResult -- No: 400/401/409 --> ShowError[Show Error\nRetry]
+    ShowError --> AddressForm
+    OrderResult -- Yes: 201 --> OrderCreated[Order Created\nRedirect to /orders/{id}]
+    
+    OrderCreated --> OrderDetail[View Order Detail\nGET /orders/{id}]
+    
+    OrderDetail --> TrackOrder{Track Delivery?}
+    TrackOrder -- Yes --> Tracking[Order Tracking\nGET /delivery/tracking/{id}]
+    Tracking --> PollStatus{Poll for updates}
+    PollStatus -- DELIVERED --> Done([Order Delivered])
+    PollStatus -- Not delivered --> Tracking
+    
+    TrackOrder -- No --> History[Order History\nGET /orders]
+    History --> Done
+    
+    Done --> End([End Session])
+    
+    style Start fill:#e1f5fe
+    style End fill:#ffebee
+    style OrderCreated fill:#e8f5e9
+    style ShowError fill:#fff3e0
+```
