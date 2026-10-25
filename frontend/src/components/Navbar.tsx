@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+﻿import { Link } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import logo from '@/assets/logo.png'
 
@@ -51,7 +51,7 @@ export default function Navbar({ cartCount = 0 }: NavbarProps) {
           </div>
           <div className="flex items-center gap-4">
             <Link to="/cart" className="relative text-gray-600 hover:text-bhuk-600 p-2 rounded-lg hover:bg-gray-50 transition-colors">
-              <span className="text-xl">🛒</span>
+              <span className="text-xl">₹</span>
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-bhuk-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                   {cartCount > 9 ? '9+' : cartCount}

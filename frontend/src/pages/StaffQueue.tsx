@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useRef, useState } from 'react'
+﻿?import { useCallback, useEffect, useRef, useState } from 'react'
 import api from '@/api/axios'
 import Navbar from '@/components/Navbar'
 import { Alert, EmptyState, Loading } from '@/components/Common'
@@ -68,7 +68,7 @@ const nextStatuses: Record<string, string[]> = {
 
 const labelFor = (s: string) => s.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
 
-const money = (minor: number | null | undefined) => (minor == null ? 'â‚¹0.00' : `â‚¹${(minor / 100).toFixed(2)}`)
+const money = (minor: number | null | undefined) => (minor == null ? '�,�0.00' : `�,�${(minor / 100).toFixed(2)}`)
 
 export default function StaffQueue() {
   const [orders, setOrders] = useState<Order[]>([])
@@ -146,7 +146,7 @@ export default function StaffQueue() {
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Order Queue</h1>
             <p className="text-gray-500">
-              Manage incoming orders for your outlet <span className="text-xs text-gray-400">Â· Last refreshed {lastRefreshed || 'â€”'}</span>
+              Manage incoming orders for your outlet <span className="text-xs text-gray-400">· Last refreshed {lastRefreshed || '�?"'}</span>
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -206,7 +206,7 @@ export default function StaffQueue() {
               <EmptyState
                 title="No orders"
                 description={statusFilter ? "No orders match your filter." : "No orders have been placed yet."}
-                icon="ðŸ“¦"
+                icon="�Y"�"
               />
             ) : (
               <div className="space-y-3">
@@ -219,19 +219,19 @@ export default function StaffQueue() {
                     <div className="flex justify-between items-start mb-3">
                       <div>
                         <h3 className="font-bold text-gray-900">Order #{order.orderNumber}</h3>
-                        <p className="text-sm text-gray-500">{order.outletName ? `Outlet: ${order.outletName} Â· ` : ''}{order.customerEmail}</p>
+                        <p className="text-sm text-gray-500">{order.outletName ? `Outlet: ${order.outletName} · ` : ''}{order.customerEmail}</p>
                       </div>
                       <span className={`px-3 py-1 rounded-full text-xs font-medium border ${statusColors[order.status] || 'bg-gray-100 text-gray-700 border-gray-200'}`}>
                         {labelFor(order.status)}
                       </span>
                     </div>
                     <div className="flex justify-between items-center mb-3">
-                      <span className="text-gray-600 text-sm">{order.items.length} item(s) Â· {new Date(order.createdAt).toLocaleString()}</span>
+                      <span className="text-gray-600 text-sm">{order.items.length} item(s) · {new Date(order.createdAt).toLocaleString()}</span>
                       <span className="font-bold text-bhuk-600">{money(order.grandTotalMinor)}</span>
                     </div>
                     <div className="flex items-center justify-between text-xs text-gray-400">
                       <span>Updated {new Date(order.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                      <span className="text-bhuk-600">View details â†’</span>
+                      <span className="text-bhuk-600">View details �?'</span>
                     </div>
                   </div>
                 ))}
@@ -276,9 +276,9 @@ function DetailDrawer({
         <div className="flex items-center justify-between p-5 border-b border-gray-100 bg-gray-50">
           <div>
             <h2 className="text-lg font-bold text-gray-900">Order #{order.orderNumber}</h2>
-            <p className="text-sm text-gray-500">{order.customerEmail} Â· {order.outletName || 'Outlet not set'}</p>
+            <p className="text-sm text-gray-500">{order.customerEmail} · {order.outletName || 'Outlet not set'}</p>
           </div>
-          <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-900 transition-colors">âœ•</button>
+          <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-900 transition-colors">�o.</button>
         </div>
 
         <div className="overflow-y-auto p-6 flex-1">
@@ -324,7 +324,7 @@ function DetailDrawer({
                           {item.instructions && <div className="text-xs text-gray-500 italic">{item.instructions}</div>}
                           {item.modifiers.length > 0 && (
                             <div className="text-xs text-gray-600 mt-1">
-                              {item.modifiers.map(m => `+ ${m.nameSnapshot} Ã—${m.quantity}`).join(' Â· ')}
+                              {item.modifiers.map(m => `+ ${m.nameSnapshot} �-${m.quantity}`).join(' · ')}
                             </div>
                           )}
                         </td>
@@ -376,7 +376,7 @@ function DetailDrawer({
                         <span className={`font-medium ${statusColors[event.newStatus || 'PLACED']?.split(' ')[1] || 'text-gray-700'}`}>
                           {labelFor(event.newStatus || 'PLACED')}
                         </span>
-                        {event.actorEmail && <span className="text-xs text-gray-500">Â· {event.actorEmail}</span>}
+                        {event.actorEmail && <span className="text-xs text-gray-500">· {event.actorEmail}</span>}
                         {event.actorRole && <span className="text-xs text-gray-500 capitalize">({event.actorRole})</span>}
                       </div>
                       {event.reason && <p className="text-xs text-gray-500">{event.reason}</p>}

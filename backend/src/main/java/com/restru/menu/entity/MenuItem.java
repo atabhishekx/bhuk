@@ -32,6 +32,12 @@ public class MenuItem {
     @Column(nullable = false, name = "base_price_minor")
     private Integer basePriceMinor;
 
+    @Column(name = "image_url", length = 500)
+    private String imageUrl;
+
+    @Column(name = "dietary_type", length = 20)
+    private String dietaryType;
+
     @Column(nullable = false)
     private Boolean active = true;
 

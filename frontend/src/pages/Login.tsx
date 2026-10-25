@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import logo from '@/assets/logo.png'
@@ -63,7 +63,7 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="input-field"
-              placeholder="••••••••"
+              placeholder="........"
             />
           </div>
           <button

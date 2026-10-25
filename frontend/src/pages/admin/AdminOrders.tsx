@@ -185,10 +185,10 @@ export default function AdminOrders() {
     }
   }
 
-  const openDetail = (order: Order) => setSelected(order)
+const openDetail = (order: Order) => setSelected(order)
   const closeDetail = () => setSelected(null)
 
-  const money = (minor: number | null | undefined) => (minor == null ? 'â‚¹0.00' : `â‚¹${(minor / 100).toFixed(2)}`)
+  const money = (minor: number | null | undefined) => (minor == null ? '₹0.00' : `₹${(minor / 100).toFixed(2)}`)
 
   if (loading) return <Loading />
 
@@ -203,8 +203,8 @@ export default function AdminOrders() {
           <div>
           <img src={logo} alt="Bhuk logo" className="w-10 h-10 rounded-full object-cover inline-block mr-3 align-middle" />
             <h1 className="text-2xl font-bold text-gray-900 inline-block align-middle">Order Management</h1>
-            <p className="text-gray-500">
-              Admin oversight of all chain orders <span className="text-xs text-gray-400">Â· Last refreshed {lastRefreshed || 'â€”'}</span>
+<p className="text-gray-500">
+              Admin oversight of all chain orders <span className="text-xs text-gray-400">· Last refreshed {lastRefreshed || '—'}</span>
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -217,8 +217,8 @@ export default function AdminOrders() {
                 />
               Live updates ({POLL_INTERVAL_MS / 1000}s)
             </label>
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-sm">
-              <span className="text-gray-400">âŸ³</span>
+<div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-sm">
+              <span className="text-gray-400">🔓</span>
               <span className="text-gray-500 font-medium">Live</span>
             </div>
           </div>
@@ -272,10 +272,10 @@ export default function AdminOrders() {
 
           <div className="flex-1">
             {orders.length === 0 ? (
-              <EmptyState
+<EmptyState
                 title="No orders"
                 description={query || statusFilter ? "No orders match your filters." : "No orders have been placed yet."}
-                icon="ðŸ“¦"
+                icon="📦"
               />
             ) : (
               <div className="space-y-3">
@@ -288,8 +288,8 @@ export default function AdminOrders() {
                     <div className="flex justify-between items-start mb-3">
                       <div>
                         <h3 className="font-bold text-gray-900">Order #{order.orderNumber}</h3>
-                        <p className="text-sm text-gray-500">
-                          {order.outletName ? `Outlet: ${order.outletName} Â· ` : ''}{order.customerEmail}
+<p className="text-sm text-gray-500">
+                          {order.outletName ? `Outlet: ${order.outletName} · ` : ''}{order.customerEmail}
                         </p>
                       </div>
                       <span className={`px-3 py-1 rounded-full text-xs font-medium border ${statusColors[order.status] || 'bg-gray-100 text-gray-700 border-gray-200'}`}>
@@ -297,12 +297,12 @@ export default function AdminOrders() {
                       </span>
                     </div>
                     <div className="flex justify-between items-center mb-3">
-                      <span className="text-gray-600 text-sm">{order.items.length} item(s) Â· {new Date(order.createdAt).toLocaleString()}</span>
+                      <span className="text-gray-600 text-sm">{order.items.length} item(s) · {new Date(order.createdAt).toLocaleString()}</span>
                       <span className="font-bold text-bhuk-600">{money(order.grandTotalMinor)}</span>
                     </div>
                     <div className="flex items-center justify-between text-xs text-gray-400">
                       <span>Updated {new Date(order.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                      <span className="text-bhuk-600">View details â†’</span>
+                      <span className="text-bhuk-600">View details →</span>
                     </div>
                   </div>
                 ))}
@@ -344,7 +344,7 @@ function DetailDrawer({
   const [reasonPrompt, setReasonPrompt] = useState<string | null>(null)
   const [reasonText, setReasonText] = useState('')
 
-  const money = (minor: number | null | undefined) => (minor == null ? 'â‚¹0.00' : `â‚¹${(minor / 100).toFixed(2)}`)
+  const money = (minor: number | null | undefined) => (minor == null ? '₹0.00' : `₹${(minor / 100).toFixed(2)}`)
   const address = (() => {
     try { return JSON.parse(order.deliveryAddressJson || '{}') } catch { return {} }
   })()
@@ -357,9 +357,9 @@ function DetailDrawer({
         <div className="flex items-center justify-between p-5 border-b border-gray-100 bg-gray-50">
           <div>
             <h2 className="text-lg font-bold text-gray-900">Order #{order.orderNumber}</h2>
-            <p className="text-sm text-gray-500">{order.customerEmail} Â· {order.outletName || 'Outlet not set'}</p>
+            <p className="text-sm text-gray-500">{order.customerEmail} · {order.outletName || 'Outlet not set'}</p>
           </div>
-          <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-900 transition-colors">âœ•</button>
+          <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-900 transition-colors">✕</button>
         </div>
 
         <div className="overflow-y-auto p-6 flex-1">
@@ -406,7 +406,7 @@ function DetailDrawer({
                           {item.instructions && <div className="text-xs text-gray-500 italic">{item.instructions}</div>}
                           {item.modifiers.length > 0 && (
                             <div className="text-xs text-gray-600 mt-1">
-                              {item.modifiers.map(m => `+ ${m.nameSnapshot} Ã—${m.quantity} (â‚¹${((m.priceDeltaMinor || 0) / 100).toFixed(2)})`).join(' Â· ')}
+                              {item.modifiers.map(m => `+ ${m.nameSnapshot} ×${m.quantity} (₹${((m.priceDeltaMinor || 0) / 100).toFixed(2)})`).join(' · ')}
                             </div>
                           )}
                         </td>
@@ -461,7 +461,7 @@ function DetailDrawer({
                         <span className={`font-medium ${statusColors[event.newStatus || 'PLACED']?.split(' ')[1] || 'text-gray-700'}`}>
                           {labelFor(event.newStatus || 'PLACED')}
                         </span>
-                        {event.actorEmail && <span className="text-xs text-gray-500">Â· {event.actorEmail}</span>}
+                        {event.actorEmail && <span className="text-xs text-gray-500">· {event.actorEmail}</span>}
                         {event.actorRole && <span className="text-xs text-gray-500 capitalize">({event.actorRole})</span>}
                       </div>
                       <p className="text-xs text-gray-500">{event.reason || '-'}</p>

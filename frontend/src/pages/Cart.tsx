@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '@/api/axios'
 import Navbar from '@/components/Navbar'
@@ -88,12 +88,12 @@ export default function Cart() {
               {items.map((item: any) => (
                 <div key={item.id} className="card p-4 flex flex-col lg:flex-row lg:items-center gap-4">
                   <div className="w-20 h-20 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0">
-                    <span className="text-3xl">🍔</span>
+                    <span className="text-3xl">₹</span>
                   </div>
                   <div className="flex-1 min-w-0">
                     <h4 className="font-bold text-gray-900">{item.itemName}</h4>
                     {item.instructions && (
-                      <p className="text-sm text-gray-500 mt-1">📝 {item.instructions}</p>
+                      <p className="text-sm text-gray-500 mt-1">₹ {item.instructions}</p>
                     )}
                     {item.modifiers?.length && (
                       <div className="flex gap-2 mt-1 flex-wrap">
@@ -111,7 +111,7 @@ export default function Cart() {
                         onClick={() => updateQty(item.id, item.quantity - 1)}
                         className="px-3 py-2 bg-gray-50 hover:bg-gray-100 border-r border-gray-200 text-gray-600"
                       >
-                        −
+                        ?
                       </button>
                       <span className="px-4 py-2 font-medium text-gray-900">{item.quantity}</span>
                       <button
@@ -122,7 +122,7 @@ export default function Cart() {
                       </button>
                     </div>
                     <span className="font-bold text-bhuk-600 ml-auto">
-                      ₹{((item.unitPriceMinor + (item.modifiers?.reduce((s: number, m: any) => s + (m.priceDeltaMinor || 0), 0) || 0)) * item.quantity / 100).toFixed(2)}
+                      ?{((item.unitPriceMinor + (item.modifiers?.reduce((s: number, m: any) => s + (m.priceDeltaMinor || 0), 0) || 0)) * item.quantity / 100).toFixed(2)}
                     </span>
                     <button
                       onClick={() => removeItem(item.id)}
@@ -145,21 +145,21 @@ export default function Cart() {
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between text-gray-600">
                   <span>Subtotal ({cart.itemCount} items)</span>
-                  <span>₹{(subtotal / 100).toFixed(2)}</span>
+                  <span>?{(subtotal / 100).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Tax (5%)</span>
-                  <span>₹{(tax / 100).toFixed(2)}</span>
+                  <span>?{(tax / 100).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Delivery Fee</span>
-                  <span>₹{(deliveryFee / 100).toFixed(2)}</span>
+                  <span>?{(deliveryFee / 100).toFixed(2)}</span>
                 </div>
               </div>
               <div className="border-t border-gray-200 pt-4 mb-6">
                 <div className="flex justify-between font-bold text-gray-900 text-lg">
                   <span>Total</span>
-                  <span>₹{(grandTotal / 100).toFixed(2)}</span>
+                  <span>?{(grandTotal / 100).toFixed(2)}</span>
                 </div>
               </div>
                 <button

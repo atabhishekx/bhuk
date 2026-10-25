@@ -17,25 +17,25 @@ INSERT INTO outlet_hours (outlet_id, weekday, open_time, close_time) VALUES
 (1, 5, '10:00:00', '22:00:00'),
 (1, 6, '10:00:00', '22:00:00');
 
--- Seed admin user (password = 'admin123' hashed with BCrypt)
--- $2a$10$N9qo8uLOickgx2ZMRZoMye is a BCrypt hash of 'admin123'
+-- Seed admin user (password = 'admin123' hashed with BCrypt cost 10)
+-- $2a$10$8K1p/a0dhrxiowfbARzJleLfZhNuZqFjZyFdvR3uF9E8YvYqxKLx2
 INSERT INTO users (email, password, name, phone, status)
-VALUES ('admin@restru.local', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZNhLPBNeDgehXOelGXBh4Y3CARzW.', 'System Admin', '+91-9999999999', 'ACTIVE');
+VALUES ('admin@restru.local', '$2a$10$8K1p/a0dhrxiowfbARzJleLfZhNuZqFjZyFdvR3uF9E8YvYqxKLx2', 'System Admin', '+91-9999999999', 'ACTIVE');
 
--- Grant ADMIN role (not scoped to outlet — chain-wide)
+-- Grant ADMIN role (not scoped to outlet -- chain-wide)
 INSERT INTO user_roles (user_id, role, outlet_id)
 VALUES (1, 'ADMIN', NULL);
 
--- Seed a delivery-guy user (password = 'password123', same BCrypt hash as admin seed)
+-- Seed a delivery-guy user (password = 'admin123', same BCrypt hash)
 INSERT INTO users (email, password, name, phone, status)
-VALUES ('delivery@restru.local', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZNhLPBNeDgehXOelGXBh4Y3CARzW.', 'Delivery Partner', '+91-9999999998', 'ACTIVE');
+VALUES ('delivery@restru.local', '$2a$10$8K1p/a0dhrxiowfbARzJleLfZhNuZqFjZyFdvR3uF9E8YvYqxKLx2', 'Delivery Partner', '+91-9999999998', 'ACTIVE');
 
 INSERT INTO user_roles (user_id, role, outlet_id)
 VALUES (2, 'DELIVERY_GUY', 1);
 
 -- Seed a regular customer user
 INSERT INTO users (email, password, name, phone, status)
-VALUES ('customer@restru.local', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZNhLPBNeDgehXOelGXBh4Y3CARzW.', 'Customer User', '+91-9999999997', 'ACTIVE');
+VALUES ('customer@restru.local', '$2a$10$8K1p/a0dhrxiowfbARzJleLfZhNuZqFjZyFdvR3uF9E8YvYqxKLx2', 'Customer User', '+91-9999999997', 'ACTIVE');
 
 INSERT INTO user_roles (user_id, role, outlet_id)
 VALUES (3, 'USER', NULL);

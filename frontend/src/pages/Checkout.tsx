@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import api from '@/api/axios'
 import Navbar from '@/components/Navbar'
 import { Loading, Alert } from '@/components/Common'
@@ -85,7 +85,7 @@ export default function Checkout() {
         <Navbar />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
           <div className="w-16 h-16 bg-food-green-100 rounded-full flex items-center justify-center text-4xl mx-auto mb-4">
-            ✅
+            ?
           </div>
           <h2 className="text-2xl font-bold text-gray-900">Order Placed!</h2>
           <p className="text-gray-500 mt-2">Your Bhuk order has been placed.</p>
@@ -114,26 +114,26 @@ export default function Checkout() {
                     <span className="text-sm text-gray-500">x{item.quantity}</span>
                   </div>
                   <span className="font-medium text-bhuk-600">
-                    ₹{((item.unitPriceMinor || 0) * item.quantity / 100).toFixed(2)}
+                    ?{((item.unitPriceMinor || 0) * item.quantity / 100).toFixed(2)}
                   </span>
                 </div>
               ))}
               <div className="mt-6 space-y-2">
                 <div className="flex justify-between text-gray-600">
                   <span>Subtotal</span>
-                  <span>₹{(quote.subtotalMinor / 100).toFixed(2)}</span>
+                  <span>?{(quote.subtotalMinor / 100).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Tax</span>
-                  <span>₹{(quote.taxMinor / 100).toFixed(2)}</span>
+                  <span>?{(quote.taxMinor / 100).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Delivery Fee</span>
-                  <span>₹{(quote.deliveryFeeMinor / 100).toFixed(2)}</span>
+                  <span>?{(quote.deliveryFeeMinor / 100).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between border-t border-gray-200 pt-2 font-bold text-gray-900 pt-2">
                   <span>Total</span>
-                  <span>₹{(quote.grandTotalMinor / 100).toFixed(2)}</span>
+                  <span>?{(quote.grandTotalMinor / 100).toFixed(2)}</span>
                 </div>
               </div>
             </div>

@@ -17,7 +17,7 @@ const statusColors: Record<string, string> = {
 }
 
 const labelFor = (s: string) => s.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
-const money = (minor: number | null | undefined) => (minor == null ? 'â‚¹0.00' : `â‚¹${(minor / 100).toFixed(2)}`)
+const money = (minor: number | null | undefined) => (minor == null ? '₹0.00' : `₹${(minor / 100).toFixed(2)}`)
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState<any>(null)
@@ -101,8 +101,8 @@ export default function AdminDashboard() {
           <div>
           <img src={logo} alt="Bhuk logo" className="w-10 h-10 rounded-full object-cover inline-block mr-3 align-middle" />
             <h1 className="text-2xl font-bold text-gray-900 inline-block align-middle">Admin Dashboard</h1>
-            <p className="text-gray-500">
-              Chain-wide operations overview <span className="text-xs text-gray-400">Â· Last refreshed {lastRefreshed || 'â€”'}</span>
+<p className="text-gray-500">
+              Chain-wide operations overview <span className="text-xs text-gray-400">· Last refreshed {lastRefreshed || '—'}</span>
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -149,8 +149,8 @@ export default function AdminDashboard() {
                 <p className="text-sm text-gray-500">Total Orders</p>
                 <p className="text-2xl font-bold text-gray-900">{stats?.totalOrders || 0}</p>
               </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 text-xl">
-                ðŸ“¦
+<div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 text-xl">
+                📦
               </div>
             </div>
           </div>
@@ -158,12 +158,12 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500">Total Revenue</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  â‚¹{((stats?.grandTotalRevenueMinor || 0) / 100).toFixed(2)}
+<p className="text-2xl font-bold text-gray-900">
+                  ₹{((stats?.grandTotalRevenueMinor || 0) / 100).toFixed(2)}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-food-green-100 rounded-xl flex items-center justify-center text-food-green-600 text-xl">
-                â‚¹
+<div className="w-12 h-12 bg-food-green-100 rounded-xl flex items-center justify-center text-food-green-600 text-xl">
+                ₹
               </div>
             </div>
           </div>
@@ -173,8 +173,8 @@ export default function AdminDashboard() {
                 <p className="text-sm text-gray-500">Delivered</p>
                 <p className="text-2xl font-bold text-gray-900">{stats?.ordersByStatusDelivered || 0}</p>
               </div>
-              <div className="w-12 h-12 bg-food-green-100 rounded-xl flex items-center justify-center text-food-green-600 text-xl">
-                âœ…
+<div className="w-12 h-12 bg-food-green-100 rounded-xl flex items-center justify-center text-food-green-600 text-xl">
+                ✓
               </div>
             </div>
           </div>
@@ -186,8 +186,8 @@ export default function AdminDashboard() {
                   {(stats?.ordersByStatusPlaced || 0) + (stats?.ordersByStatusAccepted || 0)}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center text-orange-600 text-xl">
-                â³
+<div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center text-orange-600 text-xl">
+                ⏳
               </div>
             </div>
           </div>
@@ -224,21 +224,21 @@ export default function AdminDashboard() {
           <div className="card p-6">
             <h3 className="font-bold text-lg text-gray-900 mb-6">Quick Actions</h3>
             <div className="space-y-3">
-                <a href="/admin/orders" className="w-full py-3 rounded-xl text-sm font-medium bg-bhuk-600 text-white hover:bg-bhuk-700 transition-colors flex items-center justify-between">
+<a href="/admin/orders" className="w-full py-3 rounded-xl text-sm font-medium bg-bhuk-600 text-white hover:bg-bhuk-700 transition-colors flex items-center justify-between">
                 <span>View All Orders</span>
-                <span className="text-bhuk-200">â†’</span>
+                <span className="text-bhuk-200">→</span>
               </a>
               <a href="/admin/menu" className="w-full py-3 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors flex items-center justify-between">
                 <span>Manage Menu Items</span>
-                <span className="text-gray-400">â†’</span>
+                <span className="text-gray-400">→</span>
               </a>
               <button className="w-full py-3 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors flex items-center justify-between disabled:opacity-50 disabled:pointer-events-none">
                 <span>Manage Users & Roles</span>
-                <span className="text-gray-400">â†’</span>
+                <span className="text-gray-400">→</span>
               </button>
               <button className="w-full py-3 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors flex items-center justify-between disabled:opacity-50 disabled:pointer-events-none">
                 <span>View Reports</span>
-                <span className="text-gray-400">â†’</span>
+                <span className="text-gray-400">→</span>
               </button>
             </div>
           </div>
@@ -248,12 +248,12 @@ export default function AdminDashboard() {
         <div className="mt-8">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-bold text-lg text-gray-900">Recent Orders</h3>
-              <a href="/admin/orders" className="text-sm font-medium text-bhuk-600 hover:text-bhuk-700">
-              View All Orders â†’
+<a href="/admin/orders" className="text-sm font-medium text-bhuk-600 hover:text-bhuk-700">
+              View All Orders →
             </a>
           </div>
           {orders.length === 0 ? (
-            <EmptyState title="No orders yet" description="No orders have been placed." icon="ðŸ“¦" />
+            <EmptyState title="No orders yet" description="No orders have been placed." icon="📦" />
           ) : (
             <div className="space-y-3">
               {orders.slice(0, 5).map((order: any) => (

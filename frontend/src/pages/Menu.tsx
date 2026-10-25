@@ -16,6 +16,8 @@ type Item = {
   name: string
   description?: string
   basePriceMinor: number
+  imageUrl?: string
+  dietaryType?: string
   available: boolean
   categoryId?: number
 }
@@ -167,9 +169,17 @@ export default function Menu() {
                 {filteredItems.map((item) => (
                   <div key={item.id} className="card p-5 hover:shadow-md transition-shadow cursor-pointer group">
                     <div className="w-full h-32 rounded-xl bg-gray-100 flex items-center justify-center overflow-hidden mb-3 relative group-hover:scale-105 transition-transform">
-                      <span className="absolute inset-0 flex items-center justify-center text-gray-400 text-3xl">
-                        🍽️
-                      </span>
+                      {item.imageUrl ? (
+                        <img
+                          src={item.imageUrl}
+                          alt={item.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="absolute inset-0 flex items-center justify-center text-gray-400 text-3xl">
+                          🍽️
+                        </span>
+                      )}
                     </div>
                     <div className="flex items-center justify-between mb-1">
                       <h3 className="font-bold text-gray-900 text-lg truncate">{item.name}</h3>
@@ -178,6 +188,15 @@ export default function Menu() {
                       }`}>
                         {item.available ? 'Available' : 'Unavailable'}
                       </span>
+                      {item.dietaryType && (
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium border ${
+                          item.dietaryType === 'veg'
+                            ? 'border-food-green-200 bg-food-green-50 text-food-green-700'
+                            : 'border-food-red-200 bg-food-red-50 text-food-red-700'
+                        }`}>
+                          {item.dietaryType === 'veg' ? 'Veg' : 'Non-Veg'}
+                        </span>
+                      )}
                     </div>
                     <p className="text-sm text-gray-500 line-clamp-2 mb-3">{item.description || 'No description'}</p>
                     <div className="flex items-center justify-between">

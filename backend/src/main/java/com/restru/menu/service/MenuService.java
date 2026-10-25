@@ -139,6 +139,8 @@ public class MenuService {
         item.setName(request.getName());
         item.setDescription(request.getDescription());
         item.setBasePriceMinor(request.getBasePriceMinor());
+        item.setImageUrl(request.getImageUrl());
+        item.setDietaryType(request.getDietaryType());
         item.setActive(request.getActive());
         item.setAvailable(request.getAvailable());
         MenuItem saved = itemRepository.save(item);
@@ -155,6 +157,8 @@ public class MenuService {
         item.setName(request.getName());
         item.setDescription(request.getDescription());
         item.setBasePriceMinor(request.getBasePriceMinor());
+        item.setImageUrl(request.getImageUrl());
+        item.setDietaryType(request.getDietaryType());
         item.setActive(request.getActive());
         item.setAvailable(request.getAvailable());
         MenuItem saved = itemRepository.save(item);
@@ -244,7 +248,8 @@ public class MenuService {
                 .collect(Collectors.toList());
         return new ItemResponse(item.getId(), item.getCategory().getId(),
                 item.getCategory().getName(), item.getName(), item.getDescription(),
-                item.getBasePriceMinor(), item.getActive(), item.getAvailable(), groups);
+                item.getBasePriceMinor(), item.getImageUrl(), item.getDietaryType(),
+                item.getActive(), item.getAvailable(), groups);
     }
 
     private ModifierGroupResponse toModifierGroupResponse(ModifierGroup g) {

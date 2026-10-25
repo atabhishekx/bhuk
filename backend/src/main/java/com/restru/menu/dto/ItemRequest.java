@@ -24,6 +24,12 @@ public class ItemRequest {
     @Min(0)
     private Integer basePriceMinor;
 
+    @Size(max = 500)
+    private String imageUrl;
+
+    @Size(max = 20)
+    private String dietaryType;
+
     private Boolean active = true;
 
     private Boolean available = true;
@@ -58,6 +64,22 @@ public class ItemRequest {
 
     public void setBasePriceMinor(Integer basePriceMinor) {
         this.basePriceMinor = basePriceMinor;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getDietaryType() {
+        return dietaryType;
+    }
+
+    public void setDietaryType(String dietaryType) {
+        this.dietaryType = dietaryType;
     }
 
     public Boolean getActive() {

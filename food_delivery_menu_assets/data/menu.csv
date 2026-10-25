@@ -1,0 +1,51 @@
+﻿id,name,description,category,price_inr,dietary_type,is_vegetarian,image,available,currency
+FD001,Butter Chicken,"Tender chicken in a creamy tomato-butter gravy, finished with aromatic spices.",North Indian,320,non_veg,False,images/001_butter_chicken.jpg,True,INR
+FD002,Chicken Tikka Masala,"Char-grilled chicken tikka in a rich, spiced tomato masala.",North Indian,310,non_veg,False,images/002_chicken_tikka_masala.jpg,True,INR
+FD003,Mutton Rogan Josh,Slow-cooked mutton in a fragrant Kashmiri-style gravy.,North Indian,360,non_veg,False,images/003_mutton_rogan_josh.jpg,True,INR
+FD004,Paneer Butter Masala,"Soft paneer cubes in a smooth tomato, butter, and cream gravy.",North Indian,280,veg,True,images/004_paneer_butter_masala.jpg,True,INR
+FD005,Kadai Paneer,"Paneer tossed with capsicum, onion, and freshly ground kadai spices.",North Indian,270,veg,True,images/005_kadai_paneer.jpg,True,INR
+FD006,Palak Paneer,Paneer served in a seasoned spinach gravy.,North Indian,260,veg,True,images/006_palak_paneer.jpg,True,INR
+FD007,Chole Bhature,Spiced chickpea curry served with fluffy fried bhature.,North Indian,180,veg,True,images/007_chole_bhature.jpg,True,INR
+FD008,Dal Makhani,Slow-simmered black lentils finished with butter and cream.,North Indian,240,veg,True,images/008_dal_makhani.jpg,True,INR
+FD009,Rajma Chawal,Punjabi-style kidney bean curry served with steamed rice.,North Indian,200,veg,True,images/009_rajma_chawal.jpg,True,INR
+FD010,Aloo Paratha,Whole-wheat flatbread stuffed with seasoned mashed potatoes.,North Indian,120,veg,True,images/010_aloo_paratha.jpg,True,INR
+FD011,Stuffed Naan,Soft tandoor-baked naan with a savoury stuffing.,North Indian,80,veg,True,images/011_stuffed_naan.jpg,True,INR
+FD012,Garlic Naan,Tandoor-baked naan brushed with garlic and herbs.,North Indian,70,veg,True,images/012_garlic_naan.jpg,True,INR
+FD013,Tandoori Roti,Whole-wheat flatbread baked in a traditional tandoor.,North Indian,40,veg,True,images/013_tandoori_roti.jpg,True,INR
+FD014,Lachha Paratha,"Flaky, layered Indian flatbread.",North Indian,70,veg,True,images/014_lachha_paratha.jpg,True,INR
+FD015,Steamed Rice,"Fluffy steamed rice, a simple accompaniment to curries.",Rice & Biryani,60,veg,True,images/015_steamed_rice.jpg,True,INR
+FD016,Jeera Rice,Basmati rice tempered with cumin and whole spices.,Rice & Biryani,80,veg,True,images/016_jeera_rice.jpg,True,INR
+FD017,Veg Biryani,Fragrant basmati rice layered with vegetables and biryani spices.,Rice & Biryani,220,veg,True,images/017_veg_biryani.jpg,True,INR
+FD018,Chicken Biryani,Aromatic basmati rice layered with spiced chicken.,Rice & Biryani,300,non_veg,False,images/018_chicken_biryani.jpg,True,INR
+FD019,Mutton Biryani,Slow-cooked mutton and fragrant rice with traditional biryani spices.,Rice & Biryani,340,non_veg,False,images/019_mutton_biryani.jpg,True,INR
+FD020,Hyderabadi Biryani,Hyderabadi-style dum biryani with aromatic spices.,Rice & Biryani,330,non_veg,False,images/020_hyderabadi_biryani.jpg,True,INR
+FD021,Masala Dosa,"Crisp dosa filled with spiced potato masala, served with chutneys.",South Indian,140,veg,True,images/021_masala_dosa.jpg,True,INR
+FD022,Plain Dosa,"Thin, crisp fermented-rice-and-lentil crepe with chutneys.",South Indian,120,veg,True,images/022_plain_dosa.jpg,True,INR
+FD023,Rava Dosa,"Crisp semolina dosa with onion, herbs, and spices.",South Indian,130,veg,True,images/023_rava_dosa.jpg,True,INR
+FD024,Idli Sambar,Steamed rice cakes served with sambar and coconut chutney.,South Indian,100,veg,True,images/024_idli_sambar.jpg,True,INR
+FD025,Medu Vada,Crisp lentil doughnuts served with sambar and chutney.,South Indian,100,veg,True,images/025_medu_vada.jpg,True,INR
+FD026,Uttapam,"Soft, savoury rice-lentil pancake topped with vegetables.",South Indian,130,veg,True,images/026_uttapam.jpg,True,INR
+FD027,Pongal,Comforting rice and lentil dish tempered with pepper and cumin.,South Indian,110,veg,True,images/027_pongal.jpg,True,INR
+FD028,Poori Masala,Puffed pooris served with mildly spiced potato curry.,South Indian,120,veg,True,images/028_poori_masala.jpg,True,INR
+FD029,Lemon Rice,"Rice tempered with lemon, mustard seeds, curry leaves, and peanuts.",South Indian,120,veg,True,images/029_lemon_rice.jpg,True,INR
+FD030,Curd Rice,Cooling rice mixed with yogurt and a light tempering.,South Indian,100,veg,True,images/030_curd_rice.jpg,True,INR
+FD031,Samosa,Crisp pastry filled with spiced potato and peas.,Snacks,40,veg,True,images/031_samosa.jpg,True,INR
+FD032,Kachori,"Flaky, deep-fried pastry with a spiced filling.",Snacks,40,veg,True,images/032_kachori.jpg,True,INR
+FD033,Aloo Tikki,Golden potato patties seasoned with Indian spices.,Snacks,50,veg,True,images/033_aloo_tikki.jpg,True,INR
+FD034,Paneer Pakora,Paneer pieces coated in seasoned gram-flour batter and fried.,Snacks,90,veg,True,images/034_paneer_pakora.jpg,True,INR
+FD035,Onion Pakora,Crispy onion fritters with herbs and spices.,Snacks,80,veg,True,images/035_onion_pakora.jpg,True,INR
+FD036,Chicken 65,"Spicy, crisp fried chicken bites with curry leaves.",Snacks,220,non_veg,False,images/036_chicken_65.jpg,True,INR
+FD037,Fish Fry,Fish marinated in spices and pan-fried until crisp.,Snacks,260,non_veg,False,images/037_fish_fry.jpg,True,INR
+FD038,Chicken Tikka (Dry),Yogurt-marinated chicken grilled with tandoori spices.,Snacks,240,non_veg,False,images/038_chicken_tikka_dry.jpg,True,INR
+FD039,Tandoori Chicken,"Chicken marinated with yogurt and spices, roasted in a tandoor.",Snacks,280,non_veg,False,images/039_tandoori_chicken.jpg,True,INR
+FD040,Chicken Wings,Seasoned chicken wings cooked until browned and flavourful.,Snacks,220,non_veg,False,images/040_chicken_wings.jpg,True,INR
+FD041,French Fries,"Golden, crisp potato fries with a light seasoning.",Snacks,100,veg,True,images/041_french_fries.jpg,True,INR
+FD042,Masala Papad,"Crisp papad topped with onion, tomato, and fresh herbs.",Snacks,60,veg,True,images/042_masala_papad.jpg,True,INR
+FD043,Green Salad,Fresh seasonal vegetables served as a light side.,Sides,80,veg,True,images/043_green_salad.jpg,True,INR
+FD044,Raita,Cooling yogurt side with cucumber and mild spices.,Sides,80,veg,True,images/044_raita.jpg,True,INR
+FD045,Gulab Jamun,Soft milk-solid dumplings soaked in fragrant sugar syrup.,Desserts,100,veg,True,images/045_gulab_jamun.jpg,True,INR
+FD046,Rasmalai,"Soft chenna patties served in sweetened, flavoured milk.",Desserts,120,veg,True,images/046_rasmalai.jpg,True,INR
+FD047,Kheer,Creamy rice pudding gently flavoured with cardamom.,Desserts,100,veg,True,images/047_kheer.jpg,True,INR
+FD048,Filter Coffee,South Indian filter coffee served with milk.,Beverages,70,veg,True,images/048_filter_coffee.jpg,True,INR
+FD049,Masala Chai,Indian tea brewed with milk and warming spices.,Beverages,50,veg,True,images/049_masala_chai.jpg,True,INR
+FD050,Fresh Lime Soda,"Refreshing lime drink with soda, served sweet or salted.",Beverages,60,veg,True,images/050_fresh_lime_soda.jpg,True,INR

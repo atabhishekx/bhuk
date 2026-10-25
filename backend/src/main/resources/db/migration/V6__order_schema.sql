@@ -127,7 +127,7 @@ CREATE TABLE idempotency_records (
     response_status INT          NULL,
     response_body   JSON         NULL,
     created_at      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    expires_at      TIMESTAMP    NOT NULL,
+    expires_at      TIMESTAMP    NULL,
     PRIMARY KEY (record_key),
     CONSTRAINT fk_idempotency_actor FOREIGN KEY (actor_id) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

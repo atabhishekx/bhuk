@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react'
+﻿?import { useEffect, useState } from 'react'
 import api from '@/api/axios'
 import Navbar from '@/components/Navbar'
 import { Loading, EmptyState } from '@/components/Common'
@@ -47,7 +47,7 @@ export default function StaffDashboard() {
     }
   }
 
-  const money = (minor: number | null | undefined) => (minor == null ? 'â‚¹0.00' : `â‚¹${(minor / 100).toFixed(2)}`)
+  const money = (minor: number | null | undefined) => (minor == null ? '�,�0.00' : `�,�${(minor / 100).toFixed(2)}`)
 
   if (loading) return <Loading />
 
@@ -75,7 +75,7 @@ export default function StaffDashboard() {
                 <p className="text-2xl font-bold text-gray-900">{stats?.totalOrders || 0}</p>
               </div>
               <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 text-xl">
-                ðŸ“¦
+                �Y"�
               </div>
             </div>
           </div>
@@ -84,11 +84,11 @@ export default function StaffDashboard() {
               <div>
                 <p className="text-sm text-gray-500">Revenue</p>
                 <p className="text-2xl font-bold text-gray-900">
-                  â‚¹{((stats?.grandTotalRevenueMinor || 0) / 100).toFixed(2)}
+                  �,�{((stats?.grandTotalRevenueMinor || 0) / 100).toFixed(2)}
                 </p>
               </div>
               <div className="w-12 h-12 bg-food-green-100 rounded-xl flex items-center justify-center text-food-green-600 text-xl">
-                â‚¹
+                �,�
               </div>
             </div>
           </div>
@@ -99,7 +99,7 @@ export default function StaffDashboard() {
                 <p className="text-2xl font-bold text-gray-900">{stats?.ordersByStatusPreparing || 0}</p>
               </div>
               <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center text-orange-600 text-xl">
-                ðŸ‘¨â€ðŸ³
+                �Y'��?��Y��
               </div>
             </div>
           </div>
@@ -110,7 +110,7 @@ export default function StaffDashboard() {
                 <p className="text-2xl font-bold text-gray-900">{stats?.ordersByStatusOutForDelivery || 0}</p>
               </div>
               <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600 text-xl">
-                ðŸšš
+                �Yss
               </div>
             </div>
           </div>
@@ -149,15 +149,15 @@ export default function StaffDashboard() {
             <div className="space-y-3">
               <a href="/staff/queue" className="w-full py-3 rounded-xl text-sm font-medium bg-bhuk-600 text-white hover:bg-bhuk-700 transition-colors flex items-center justify-between">
                 <span>Manage Order Queue</span>
-                <span className="text-bhuk-200">â†’</span>
+                <span className="text-bhuk-200">�?'</span>
               </a>
               <button className="w-full py-3 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors flex items-center justify-between disabled:opacity-50 disabled:pointer-events-none">
                 <span>Update Order Status</span>
-                <span className="text-gray-400">â†’</span>
+                <span className="text-gray-400">�?'</span>
               </button>
               <button className="w-full py-3 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors flex items-center justify-between disabled:opacity-50 disabled:pointer-events-none">
                 <span>Record Delivery Handoff</span>
-                <span className="text-gray-400">â†’</span>
+                <span className="text-gray-400">�?'</span>
               </button>
             </div>
           </div>
@@ -168,11 +168,11 @@ export default function StaffDashboard() {
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-bold text-lg text-gray-900">Recent Orders</h3>
             <a href="/staff/queue" className="text-sm font-medium text-bhuk-600 hover:text-bhuk-700">
-              View Full Queue â†’
+              View Full Queue �?'
             </a>
           </div>
           {orders.length === 0 ? (
-            <EmptyState title="No orders yet" description="No orders have been placed for your outlet." icon="ðŸ“¦" />
+            <EmptyState title="No orders yet" description="No orders have been placed for your outlet." icon="�Y"�" />
           ) : (
             <div className="space-y-3">
               {orders.slice(0, 5).map((order: any) => (
