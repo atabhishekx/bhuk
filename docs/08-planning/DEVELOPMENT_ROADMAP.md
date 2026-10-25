@@ -1,4 +1,4 @@
-# Development Roadmap
+﻿# Development Roadmap
 
 **Status:** Proposed sequence; dates and estimates are intentionally omitted until the team and stack are known.
 
@@ -10,7 +10,7 @@
 - Add tests and observability with each feature.
 - Do not integrate live payment credentials until the sandbox flow is verified.
 
-## Phase 0 — Product and technical decisions
+## Phase 0 â€” Product and technical decisions
 
 Deliverables:
 - Confirm launch channel and outlet model.
@@ -22,7 +22,7 @@ Deliverables:
 Exit criteria:
 - No unresolved decision that blocks data model or critical workflow design.
 
-## Phase 1 — Foundation
+## Phase 1 â€” Foundation
 
 Work:
 - Project skeleton and environment configuration.
@@ -35,7 +35,7 @@ Exit criteria:
 - Developer can run the application locally using documented steps.
 - Protected routes and server-side authorization are tested.
 
-## Phase 2 — Menu, cart, and pricing
+## Phase 2 â€” Menu, cart, and pricing
 
 Work:
 - Outlet and serviceability model.
@@ -48,7 +48,7 @@ Exit criteria:
 - Valid cart and price calculations are covered by automated tests.
 - Unavailable items and invalid modifiers are blocked.
 
-## Phase 3 — Checkout and order creation
+## Phase 3 â€” Checkout and order creation
 
 Work:
 - Address validation and outlet selection.
@@ -62,7 +62,7 @@ Exit criteria:
 - Duplicate submission and payment timeout cases are tested.
 - Order/payment states remain consistent and auditable.
 
-## Phase 4 — Delivery operations
+## Phase 4 â€” Delivery operations
 
 Work:
 - Partner profile and availability.
@@ -76,7 +76,7 @@ Exit criteria:
 - Concurrent assignment tests pass.
 - Operations staff can recover from no-partner and failed-delivery scenarios.
 
-## Phase 5 — Admin and reporting
+## Phase 5 â€” Admin and reporting
 
 Work:
 - Menu/outlet management.
@@ -88,7 +88,7 @@ Work:
 Exit criteria:
 - Admin operations are permissioned and audited.
 
-## Phase 6 — Hardening and pilot
+## Phase 6 â€” Hardening and pilot
 
 Work:
 - Security review and dependency scans.
@@ -124,3 +124,5 @@ Each task should contain:
 6. Display the order in restaurant operations.
 7. Advance status and show it to the customer.
 8. Add delivery assignment after the order lifecycle is stable.
+
+

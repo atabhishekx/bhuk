@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import api from '@/api/axios'
 import Navbar from '@/components/Navbar'
 import { Loading } from '@/components/Common'
+import logo from '@/assets/logo.png'
 
 export default function Cart() {
   const [cart, setCart] = useState<any>(null)
@@ -57,9 +58,7 @@ export default function Cart() {
         <Navbar />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center text-4xl mb-4">
-              🛒
-            </div>
+            <img src={logo} alt="Bhuk logo" className="w-20 h-20 rounded-full object-cover mb-4" />
             <h3 className="text-lg font-semibold text-gray-900">Your cart is empty</h3>
             <p className="text-gray-500 mt-2">Add some delicious items from our menu to get started.</p>
           </div>
@@ -99,7 +98,7 @@ export default function Cart() {
                     {item.modifiers?.length && (
                       <div className="flex gap-2 mt-1 flex-wrap">
                         {item.modifiers.map((m: any) => (
-                          <span key={m.id} className="px-2 py-1 bg-restru-50 text-restru-700 text-xs rounded-full border border-restru-100">
+                          <span key={m.id} className="px-2 py-1 bg-bhuk-50 text-bhuk-700 text-xs rounded-full border border-bhuk-100">
                             +{m.modifierName}
                           </span>
                         ))}
@@ -122,7 +121,7 @@ export default function Cart() {
                         +
                       </button>
                     </div>
-                    <span className="font-bold text-restru-600 ml-auto">
+                    <span className="font-bold text-bhuk-600 ml-auto">
                       ₹{((item.unitPriceMinor + (item.modifiers?.reduce((s: number, m: any) => s + (m.priceDeltaMinor || 0), 0) || 0)) * item.quantity / 100).toFixed(2)}
                     </span>
                     <button

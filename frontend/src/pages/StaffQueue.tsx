@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+﻿import { useCallback, useEffect, useRef, useState } from 'react'
 import api from '@/api/axios'
 import Navbar from '@/components/Navbar'
 import { Alert, EmptyState, Loading } from '@/components/Common'
@@ -68,7 +68,7 @@ const nextStatuses: Record<string, string[]> = {
 
 const labelFor = (s: string) => s.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
 
-const money = (minor: number | null | undefined) => (minor == null ? '₹0.00' : `₹${(minor / 100).toFixed(2)}`)
+const money = (minor: number | null | undefined) => (minor == null ? 'â‚¹0.00' : `â‚¹${(minor / 100).toFixed(2)}`)
 
 export default function StaffQueue() {
   const [orders, setOrders] = useState<Order[]>([])
@@ -146,7 +146,7 @@ export default function StaffQueue() {
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Order Queue</h1>
             <p className="text-gray-500">
-              Manage incoming orders for your outlet <span className="text-xs text-gray-400">· Last refreshed {lastRefreshed || '—'}</span>
+              Manage incoming orders for your outlet <span className="text-xs text-gray-400">Â· Last refreshed {lastRefreshed || 'â€”'}</span>
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -155,7 +155,7 @@ export default function StaffQueue() {
                 type="checkbox"
                 checked={liveEnabled}
                 onChange={e => setLiveEnabled(e.target.checked)}
-                className="accent-restru-600"
+                className="accent-bhuk-600"
               />
               Live updates ({POLL_INTERVAL_MS / 1000}s)
             </label>
@@ -170,7 +170,7 @@ export default function StaffQueue() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => setStatusFilter(null)}
-                    className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${!statusFilter ? 'bg-restru-600 text-white' : 'bg-white border border-gray-200 text-gray-700'}`}
+                    className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${!statusFilter ? 'bg-bhuk-600 text-white' : 'bg-white border border-gray-200 text-gray-700'}`}
                   >
                     All
                   </button>
@@ -178,7 +178,7 @@ export default function StaffQueue() {
                     <button
                       key={s}
                       onClick={() => setStatusFilter(s)}
-                      className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${statusFilter === s ? 'bg-restru-600 text-white' : 'bg-white border border-gray-200 text-gray-700'}`}
+                      className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${statusFilter === s ? 'bg-bhuk-600 text-white' : 'bg-white border border-gray-200 text-gray-700'}`}
                     >
                       {labelFor(s)}
                     </button>
@@ -206,7 +206,7 @@ export default function StaffQueue() {
               <EmptyState
                 title="No orders"
                 description={statusFilter ? "No orders match your filter." : "No orders have been placed yet."}
-                icon="📦"
+                icon="ðŸ“¦"
               />
             ) : (
               <div className="space-y-3">
@@ -219,19 +219,19 @@ export default function StaffQueue() {
                     <div className="flex justify-between items-start mb-3">
                       <div>
                         <h3 className="font-bold text-gray-900">Order #{order.orderNumber}</h3>
-                        <p className="text-sm text-gray-500">{order.outletName ? `Outlet: ${order.outletName} · ` : ''}{order.customerEmail}</p>
+                        <p className="text-sm text-gray-500">{order.outletName ? `Outlet: ${order.outletName} Â· ` : ''}{order.customerEmail}</p>
                       </div>
                       <span className={`px-3 py-1 rounded-full text-xs font-medium border ${statusColors[order.status] || 'bg-gray-100 text-gray-700 border-gray-200'}`}>
                         {labelFor(order.status)}
                       </span>
                     </div>
                     <div className="flex justify-between items-center mb-3">
-                      <span className="text-gray-600 text-sm">{order.items.length} item(s) · {new Date(order.createdAt).toLocaleString()}</span>
-                      <span className="font-bold text-restru-600">{money(order.grandTotalMinor)}</span>
+                      <span className="text-gray-600 text-sm">{order.items.length} item(s) Â· {new Date(order.createdAt).toLocaleString()}</span>
+                      <span className="font-bold text-bhuk-600">{money(order.grandTotalMinor)}</span>
                     </div>
                     <div className="flex items-center justify-between text-xs text-gray-400">
                       <span>Updated {new Date(order.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                      <span className="text-restru-600">View details →</span>
+                      <span className="text-bhuk-600">View details â†’</span>
                     </div>
                   </div>
                 ))}
@@ -276,9 +276,9 @@ function DetailDrawer({
         <div className="flex items-center justify-between p-5 border-b border-gray-100 bg-gray-50">
           <div>
             <h2 className="text-lg font-bold text-gray-900">Order #{order.orderNumber}</h2>
-            <p className="text-sm text-gray-500">{order.customerEmail} · {order.outletName || 'Outlet not set'}</p>
+            <p className="text-sm text-gray-500">{order.customerEmail} Â· {order.outletName || 'Outlet not set'}</p>
           </div>
-          <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-900 transition-colors">✕</button>
+          <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-900 transition-colors">âœ•</button>
         </div>
 
         <div className="overflow-y-auto p-6 flex-1">
@@ -302,7 +302,7 @@ function DetailDrawer({
           <div className="mb-6">
             <div className="flex justify-between items-center mb-3">
               <h3 className="font-bold text-sm text-gray-900 uppercase tracking-wider">Items</h3>
-              <span className="text-xs font-medium text-restru-600">{order.items.length} item(s)</span>
+              <span className="text-xs font-medium text-bhuk-600">{order.items.length} item(s)</span>
             </div>
             <div className="border border-gray-100 rounded-xl overflow-hidden">
               {order.items.length === 0 ? (
@@ -324,7 +324,7 @@ function DetailDrawer({
                           {item.instructions && <div className="text-xs text-gray-500 italic">{item.instructions}</div>}
                           {item.modifiers.length > 0 && (
                             <div className="text-xs text-gray-600 mt-1">
-                              {item.modifiers.map(m => `+ ${m.nameSnapshot} ×${m.quantity}`).join(' · ')}
+                              {item.modifiers.map(m => `+ ${m.nameSnapshot} Ã—${m.quantity}`).join(' Â· ')}
                             </div>
                           )}
                         </td>
@@ -341,7 +341,7 @@ function DetailDrawer({
           <div className="mb-6 border border-gray-100 rounded-xl p-4 bg-gray-50">
             <div className="flex justify-between items-center mb-3">
               <h3 className="font-bold text-sm text-gray-900 uppercase tracking-wider">Pricing</h3>
-              <span className="text-xs font-medium text-restru-600">Total</span>
+              <span className="text-xs font-medium text-bhuk-600">Total</span>
             </div>
             <div className="flex justify-between border-t border-gray-200 pt-2 font-bold text-gray-900">
               <span>Grand Total</span>
@@ -376,7 +376,7 @@ function DetailDrawer({
                         <span className={`font-medium ${statusColors[event.newStatus || 'PLACED']?.split(' ')[1] || 'text-gray-700'}`}>
                           {labelFor(event.newStatus || 'PLACED')}
                         </span>
-                        {event.actorEmail && <span className="text-xs text-gray-500">· {event.actorEmail}</span>}
+                        {event.actorEmail && <span className="text-xs text-gray-500">Â· {event.actorEmail}</span>}
                         {event.actorRole && <span className="text-xs text-gray-500 capitalize">({event.actorRole})</span>}
                       </div>
                       {event.reason && <p className="text-xs text-gray-500">{event.reason}</p>}
@@ -390,7 +390,7 @@ function DetailDrawer({
 
           <div className="pt-6 border-t border-gray-100">
             <h3 className="font-bold text-sm text-gray-900 uppercase tracking-wider mb-3">Change status</h3>
-            <p className="text-xs text-gray-500 mb-3 text-restru-600">Server-enforced state transitions only.</p>
+            <p className="text-xs text-gray-500 mb-3 text-bhuk-600">Server-enforced state transitions only.</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {terminalStates.has(order.status) ? (
                 <button disabled className="px-4 py-2.5 rounded-lg text-sm font-medium bg-gray-100 text-gray-400 cursor-not-allowed">
@@ -426,7 +426,7 @@ function DetailDrawer({
                   autoFocus
                   value={reasonText}
                   onChange={e => setReasonText(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-restru-500 focus:border-transparent"
+                  className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-bhuk-500 focus:border-transparent"
                   onKeyDown={e => {
                     if (e.key === 'Enter' && reasonText.trim()) {
                       onStatusChange(reasonPrompt, reasonText.trim())
@@ -449,7 +449,7 @@ function DetailDrawer({
                       setReasonPrompt(null)
                       setReasonText('')
                     }}
-                    className="px-4 py-2.5 rounded-lg text-sm font-medium bg-restru-600 text-white hover:bg-restru-700"
+                    className="px-4 py-2.5 rounded-lg text-sm font-medium bg-bhuk-600 text-white hover:bg-bhuk-700"
                   >
                     Confirm
                   </button>
@@ -462,3 +462,4 @@ function DetailDrawer({
     </div>
   )
 }
+

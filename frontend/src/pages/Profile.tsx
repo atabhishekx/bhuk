@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import api from '@/api/axios'
 import Navbar from '@/components/Navbar'
 import { Alert } from '@/components/Common'
+import logo from '@/assets/logo.png'
 
 export default function Profile() {
   const { user, logout } = useAuth()
@@ -61,13 +62,11 @@ export default function Profile() {
           <div className="flex-1 lg:w-1/3">
             <div className="card p-6">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-16 h-16 rounded-full bg-restru-600 flex items-center justify-center text-white font-bold text-2xl">
-                  {user?.name?.charAt(0)?.toUpperCase() || 'U'}
-                </div>
+                <img src={logo} alt="Bhuk logo" className="w-16 h-16 rounded-full object-cover" />
                 <div>
                   <h2 className="font-bold text-gray-900">{user?.name}</h2>
                   <p className="text-sm text-gray-500">{user?.email}</p>
-                  <p className="text-xs text-restru-600 capitalize mt-1">{user?.roles.join(', ') || 'customer'}</p>
+                  <p className="text-xs text-bhuk-600 capitalize mt-1">{user?.roles.join(', ') || 'customer'}</p>
                 </div>
               </div>
               <div className="space-y-4">
@@ -95,7 +94,7 @@ export default function Profile() {
                 </div>
                 <button
                   onClick={() => setShowForm(!showForm)}
-                  className="text-sm font-medium text-restru-600 hover:text-restru-700"
+                  className="text-sm font-medium text-bhuk-600 hover:text-bhuk-700"
                 >
                   {showForm ? 'Cancel' : 'Add Address'}
                 </button>
@@ -184,8 +183,8 @@ export default function Profile() {
               ) : (
                 <div className="space-y-3">
                   {addresses.map((addr) => (
-                    <div key={addr.id} className="flex items-start gap-3 p-3 rounded-xl border border-gray-100 bg-white ${addr.isDefault ? 'bg-restru-50 border-restru-100' : ''}">
-                      <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${addr.isDefault ? 'bg-restru-600 text-white' : 'bg-gray-200 text-gray-600'}`}>
+                    <div key={addr.id} className="flex items-start gap-3 p-3 rounded-xl border border-gray-100 bg-white ${addr.isDefault ? 'bg-bhuk-50 border-bhuk-100' : ''}">
+                      <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${addr.isDefault ? 'bg-bhuk-600 text-white' : 'bg-gray-200 text-gray-600'}`}>
                         {addr.isDefault ? 'DEFAULT' : addr.city?.charAt(0)?.toUpperCase()}
                       </span>
                       <div className="flex-1">

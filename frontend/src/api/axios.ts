@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios'
 import type { InternalAxiosRequestConfig } from 'axios'
 
-const TOKEN_KEY = 'restru_token'
+const TOKEN_KEY = 'bhuk_token'
 
 const api = axios.create({
   baseURL: '/api/v1',

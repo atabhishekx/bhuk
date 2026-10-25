@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 /**
@@ -91,7 +92,9 @@ public class DeliveryService {
 
     @Transactional(readOnly = true)
     public List<DeliveryPartnerResponse> listAvailablePartners() {
-        return partnerRepository.findByStatusOrderByUpdatedAtDesc("ONLINE").stream()
+        return partnerRepository.findAll().stream()
+                .sorted(Comparator.comparing(DeliveryPartner::getStatus)
+                        .thenComparing(p -> p.getUpdatedAt(), Comparator.reverseOrder()))
                 .map(this::toPartnerResponse)
                 .collect(Collectors.toList());
     }

@@ -1,4 +1,4 @@
-# Database Design
+﻿# Database Design
 
 **Status:** Logical model draft; adapt to the selected database and ORM.
 
@@ -108,3 +108,5 @@ Validate with query plans, but likely candidates include:
 - Whether an order can contain scheduled items or multiple deliveries.
 - Geographic zone representation.
 - Audit log retention and personal-data deletion strategy.
+
+

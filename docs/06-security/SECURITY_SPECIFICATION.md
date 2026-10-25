@@ -1,4 +1,4 @@
-# Security and Privacy Specification
+﻿# Security and Privacy Specification
 
 **Status:** Baseline; validate against selected stack, providers, and applicable law.
 
@@ -99,3 +99,5 @@ Before production:
 - Confirm HTTPS, secret storage, backups, logging redaction, and access controls.
 - Document incident response and credential rotation.
 - Review applicable Indian privacy, consumer, tax, and payment obligations with qualified stakeholders.
+
+

@@ -1,4 +1,4 @@
-# Deployment and Operations Guide
+﻿# Deployment and Operations Guide
 
 **Status:** Stack-neutral template. Replace placeholders after infrastructure selection.
 
@@ -112,3 +112,5 @@ For delivery assignment failure:
 - [ ] Privacy, cancellation, refund, and fee policies reviewed.
 - [ ] Smoke tests pass after deployment.
 - [ ] Rollback/forward-fix plan is available.
+
+

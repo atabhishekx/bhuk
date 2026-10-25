@@ -1,5 +1,7 @@
 package com.restru.order.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restru.auth.entity.User;
 import com.restru.auth.entity.UserRole;
 import com.restru.auth.entity.Outlet;
@@ -67,6 +69,7 @@ public class OrderService {
     private final MenuItemRepository menuItemRepository;
     private final CartService cartService;
     private final OrderNumberGenerator orderNumberGenerator;
+    private final ObjectMapper objectMapper;
 
     public OrderService(OrderRepository orderRepository,
                         OrderItemRepository orderItemRepository,
@@ -77,7 +80,8 @@ public class OrderService {
                         OutletRepository outletRepository,
                         MenuItemRepository menuItemRepository,
                         CartService cartService,
-                        OrderNumberGenerator orderNumberGenerator) {
+                        OrderNumberGenerator orderNumberGenerator,
+                        ObjectMapper objectMapper) {
         this.orderRepository = orderRepository;
         this.orderItemRepository = orderItemRepository;
         this.orderItemModifierRepository = orderItemModifierRepository;
@@ -88,6 +92,7 @@ public class OrderService {
         this.menuItemRepository = menuItemRepository;
         this.cartService = cartService;
         this.orderNumberGenerator = orderNumberGenerator;
+        this.objectMapper = objectMapper;
     }
 
     /* ---------- Public read ---------- */
@@ -247,7 +252,15 @@ public class OrderService {
         order.setTaxMinor(pricing.taxMinor);
         order.setDeliveryFeeMinor(pricing.deliveryFeeMinor);
         order.setGrandTotalMinor(pricing.grandTotalMinor);
-        order.setDeliveryAddressJson(request.getDeliveryAddressJson() != null ? request.getDeliveryAddressJson() : "{}");
+        String deliveryAddressJson = request.getDeliveryAddressJson();
+        if ((deliveryAddressJson == null || deliveryAddressJson.isBlank()) && request.getDeliveryAddress() != null) {
+            try {
+                deliveryAddressJson = objectMapper.writeValueAsString(request.getDeliveryAddress());
+            } catch (JsonProcessingException e) {
+                throw new IllegalStateException("Failed to serialize delivery address", e);
+            }
+        }
+        order.setDeliveryAddressJson(deliveryAddressJson != null ? deliveryAddressJson : "{}");
         order.setIdempotencyKey(idempotencyKey);
         order = orderRepository.save(order);
 
@@ -415,19 +428,29 @@ public class OrderService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + email));
 
-        com.restru.auth.entity.Outlet outlet = null;
-        if (outletId != null) {
-            outlet = outletRepository.findById(outletId)
-                    .orElseThrow(() -> new IllegalArgumentException("Outlet not found: " + outletId));
-        } else {
-            outlet = user.getRoles().stream()
-                    .map(UserRole::getOutlet)
-                    .filter(Objects::nonNull)
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException("No outlet specified"));
-        }
+        boolean isAdmin = user.getRoles().stream()
+                .map(UserRole::getRole)
+                .anyMatch("ADMIN"::equals);
 
-        List<Order> orders = orderRepository.findByOutletIdOrderByCreatedAtDesc(outlet.getId());
+        com.restru.auth.entity.Outlet outlet = null;
+        List<Order> orders;
+        if (isAdmin && outletId == null) {
+            // Chain-wide admin report: all outlets
+            orders = orderRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
+            outlet = null;
+        } else {
+            if (outletId != null) {
+                outlet = outletRepository.findById(outletId)
+                        .orElseThrow(() -> new IllegalArgumentException("Outlet not found: " + outletId));
+            } else {
+                outlet = user.getRoles().stream()
+                        .map(UserRole::getOutlet)
+                        .filter(Objects::nonNull)
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalArgumentException("No outlet specified"));
+            }
+            orders = orderRepository.findByOutletIdOrderByCreatedAtDesc(outlet.getId());
+        }
 
         Integer totalOrders = orders.size();
         Integer placed = 0, accepted = 0, preparing = 0, readyForPickup = 0,
@@ -451,7 +474,8 @@ public class OrderService {
         }
 
         return new com.restru.order.dto.OperationsReportResponse(
-                outlet.getId(), outlet.getName(),
+                outlet != null ? outlet.getId() : null,
+                outlet != null ? outlet.getName() : "All Outlets",
                 totalOrders, placed, accepted, preparing, readyForPickup,
                 outForDelivery, delivered, cancelled, rejected,
                 grandTotal, java.time.Instant.now()

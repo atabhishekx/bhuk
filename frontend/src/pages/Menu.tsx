@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import api from '@/api/axios'
 import Navbar from '@/components/Navbar'
 import { EmptyState, Loading } from '@/components/Common'
+import logo from '@/assets/logo.png'
 
 type Category = {
   id: number
@@ -87,9 +88,7 @@ export default function Menu() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <div className="w-16 h-12 bg-restru-600 rounded-xl flex items-center justify-center text-white font-bold text-2xl mx-auto mb-4">
-              R
-            </div>
+            <img src={logo} alt="Bhuk logo" className="w-16 h-16 rounded-full object-cover mx-auto mb-4" />
             <h2 className="text-2xl font-bold text-gray-900">Login Required</h2>
             <p className="text-gray-500">Please sign in to browse the menu and order food.</p>
           </div>
@@ -131,7 +130,7 @@ export default function Menu() {
                 onClick={() => setSelectedCategory(null)}
                 className={`w-full text-left px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
                   selectedCategory === null
-                    ? 'bg-restru-600 text-white'
+                    ? 'bg-bhuk-600 text-white'
                     : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
                 }`}
               >
@@ -143,8 +142,8 @@ export default function Menu() {
                   onClick={() => setSelectedCategory(cat.id)}
                   className={`w-full text-left px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
                     selectedCategory === cat.id
-                      ? 'bg-restru-600 text-white'
-                      : 'bg-white border border-gray-200 text-gray-700 hover:bg:bg-gray-50'
+                      ? 'bg-bhuk-600 text-white'
+                      : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
                   }`}
                 >
                   {cat.name}
@@ -182,7 +181,7 @@ export default function Menu() {
                     </div>
                     <p className="text-sm text-gray-500 line-clamp-2 mb-3">{item.description || 'No description'}</p>
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-restru-600">₹{(item.basePriceMinor / 100).toFixed(2)}</span>
+                      <span className="font-bold text-bhuk-600">₹{(item.basePriceMinor / 100).toFixed(2)}</span>
                       {!item.available ? (
                         <span className="text-sm text-food-red-500 font-medium">Unavailable</span>
                       ) : (
@@ -191,7 +190,7 @@ export default function Menu() {
                             e.stopPropagation()
                             addToCart(item)
                           }}
-                          className="bg-restru-600 hover:bg-restru-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors active:scale-95"
+                          className="bg-bhuk-600 hover:bg-bhuk-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors active:scale-95"
                         >
                           Add
                         </button>

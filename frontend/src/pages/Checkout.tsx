@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import api from '@/api/axios'
 import Navbar from '@/components/Navbar'
 import { Loading, Alert } from '@/components/Common'
+import logo from '@/assets/logo.png'
 
 export default function Checkout() {
   const [cart, setCart] = useState<any>(null)
@@ -68,9 +69,7 @@ export default function Checkout() {
         <Navbar />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center text-4xl mb-4">
-              🛒
-            </div>
+            <img src={logo} alt="Bhuk logo" className="w-20 h-20 rounded-full object-cover mb-4" />
             <h3 className="text-lg font-semibold text-gray-900">Your cart is empty</h3>
             <p className="text-gray-500 mt-2">Add items before checkout.</p>
             <a href="/menu" className="mt-6 inline-block btn-primary">Browse Menu</a>
@@ -89,7 +88,7 @@ export default function Checkout() {
             ✅
           </div>
           <h2 className="text-2xl font-bold text-gray-900">Order Placed!</h2>
-          <p className="text-gray-500 mt-2">Your order has been placed.</p>
+          <p className="text-gray-500 mt-2">Your Bhuk order has been placed.</p>
           <a href={`/orders/${orderId}`} className="mt-6 inline-block btn-primary">
             View Order
           </a>
@@ -114,7 +113,7 @@ export default function Checkout() {
                     <br />
                     <span className="text-sm text-gray-500">x{item.quantity}</span>
                   </div>
-                  <span className="font-medium text-gray-900">
+                  <span className="font-medium text-bhuk-600">
                     ₹{((item.unitPriceMinor || 0) * item.quantity / 100).toFixed(2)}
                   </span>
                 </div>
@@ -132,7 +131,7 @@ export default function Checkout() {
                   <span>Delivery Fee</span>
                   <span>₹{(quote.deliveryFeeMinor / 100).toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between font-bold text-gray-900 pt-2 border-t border-gray-200">
+                <div className="flex justify-between border-t border-gray-200 pt-2 font-bold text-gray-900 pt-2">
                   <span>Total</span>
                   <span>₹{(quote.grandTotalMinor / 100).toFixed(2)}</span>
                 </div>

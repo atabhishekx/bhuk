@@ -1,4 +1,4 @@
-# System Architecture
+﻿# System Architecture
 
 **Status:** Technology-neutral reference architecture; stack selection is TBD.
 
@@ -147,3 +147,5 @@ Do not show a precise map or ETA unless the relevant data and provider integrati
 - Initial traffic and availability target.
 
 Record final decisions in `docs/10-decisions/ADR/`.
+
+

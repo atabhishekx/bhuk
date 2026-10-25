@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+﻿import { useCallback, useEffect, useRef, useState } from 'react'
 import api from '@/api/axios'
 import Navbar from '@/components/Navbar'
 import { Alert, EmptyState, Loading } from '@/components/Common'
+import logo from '@/assets/logo.png'
 
 type OrderItem = {
   id: number
@@ -108,6 +109,7 @@ export default function AdminOrders() {
       const data = res.data.data ?? []
       setOrders(data)
       setLastRefreshed(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }))
+      // Keep the currently open detail drawer in sync with latest server data
       if (selected) {
         const updated = data.find(o => o.id === selected.id)
         if (updated) setSelected(updated)
@@ -117,7 +119,7 @@ export default function AdminOrders() {
     } finally {
       setLoading(false)
     }
-  }, [statusFilter, query, selected])
+  }, [statusFilter, query])
 
   const fetchAvailablePartners = useCallback(async () => {
     try {
@@ -186,7 +188,7 @@ export default function AdminOrders() {
   const openDetail = (order: Order) => setSelected(order)
   const closeDetail = () => setSelected(null)
 
-  const money = (minor: number | null | undefined) => (minor == null ? '₹0.00' : `₹${(minor / 100).toFixed(2)}`)
+  const money = (minor: number | null | undefined) => (minor == null ? 'â‚¹0.00' : `â‚¹${(minor / 100).toFixed(2)}`)
 
   if (loading) return <Loading />
 
@@ -199,23 +201,24 @@ export default function AdminOrders() {
         )}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Order Management</h1>
+          <img src={logo} alt="Bhuk logo" className="w-10 h-10 rounded-full object-cover inline-block mr-3 align-middle" />
+            <h1 className="text-2xl font-bold text-gray-900 inline-block align-middle">Order Management</h1>
             <p className="text-gray-500">
-              Admin oversight of all chain orders <span className="text-xs text-gray-400">· Last refreshed {lastRefreshed || '—'}</span>
+              Admin oversight of all chain orders <span className="text-xs text-gray-400">Â· Last refreshed {lastRefreshed || 'â€”'}</span>
             </p>
           </div>
           <div className="flex items-center gap-3">
             <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                checked={liveEnabled}
-                onChange={e => setLiveEnabled(e.target.checked)}
-                className="accent-restru-600"
-              />
+                <input
+                  type="checkbox"
+                  checked={liveEnabled}
+                  onChange={e => setLiveEnabled(e.target.checked)}
+                  className="accent-bhuk-600"
+                />
               Live updates ({POLL_INTERVAL_MS / 1000}s)
             </label>
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-sm">
-              <span className="text-gray-400">⟳</span>
+              <span className="text-gray-400">âŸ³</span>
               <span className="text-gray-500 font-medium">Live</span>
             </div>
           </div>
@@ -231,12 +234,12 @@ export default function AdminOrders() {
                   placeholder="Search order # or customer email"
                   value={query}
                   onChange={e => setQuery(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-restru-500 focus:border-transparent"
+                  className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-bhuk-500 focus:border-transparent"
                 />
                 <div className="flex gap-2">
                   <button
                     onClick={() => setStatusFilter(null)}
-                    className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${!statusFilter ? 'bg-restru-600 text-white' : 'bg-white border border-gray-200 text-gray-700'}`}
+                    className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${!statusFilter ? 'bg-bhuk-600 text-white' : 'bg-white border border-gray-200 text-gray-700'}`}
                   >
                     All
                   </button>
@@ -244,7 +247,7 @@ export default function AdminOrders() {
                     <button
                       key={s}
                       onClick={() => setStatusFilter(s)}
-                      className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${statusFilter === s ? 'bg-restru-600 text-white' : 'bg-white border border-gray-200 text-gray-700'}`}
+                      className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${statusFilter === s ? 'bg-bhuk-600 text-white' : 'bg-white border border-gray-200 text-gray-700'}`}
                     >
                       {labelFor(s)}
                     </button>
@@ -272,7 +275,7 @@ export default function AdminOrders() {
               <EmptyState
                 title="No orders"
                 description={query || statusFilter ? "No orders match your filters." : "No orders have been placed yet."}
-                icon="📦"
+                icon="ðŸ“¦"
               />
             ) : (
               <div className="space-y-3">
@@ -286,7 +289,7 @@ export default function AdminOrders() {
                       <div>
                         <h3 className="font-bold text-gray-900">Order #{order.orderNumber}</h3>
                         <p className="text-sm text-gray-500">
-                          {order.outletName ? `Outlet: ${order.outletName} · ` : ''}{order.customerEmail}
+                          {order.outletName ? `Outlet: ${order.outletName} Â· ` : ''}{order.customerEmail}
                         </p>
                       </div>
                       <span className={`px-3 py-1 rounded-full text-xs font-medium border ${statusColors[order.status] || 'bg-gray-100 text-gray-700 border-gray-200'}`}>
@@ -294,12 +297,12 @@ export default function AdminOrders() {
                       </span>
                     </div>
                     <div className="flex justify-between items-center mb-3">
-                      <span className="text-gray-600 text-sm">{order.items.length} item(s) · {new Date(order.createdAt).toLocaleString()}</span>
-                      <span className="font-bold text-restru-600">{money(order.grandTotalMinor)}</span>
+                      <span className="text-gray-600 text-sm">{order.items.length} item(s) Â· {new Date(order.createdAt).toLocaleString()}</span>
+                      <span className="font-bold text-bhuk-600">{money(order.grandTotalMinor)}</span>
                     </div>
                     <div className="flex items-center justify-between text-xs text-gray-400">
                       <span>Updated {new Date(order.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                      <span className="text-restru-600">View details →</span>
+                      <span className="text-bhuk-600">View details â†’</span>
                     </div>
                   </div>
                 ))}
@@ -341,7 +344,7 @@ function DetailDrawer({
   const [reasonPrompt, setReasonPrompt] = useState<string | null>(null)
   const [reasonText, setReasonText] = useState('')
 
-  const money = (minor: number | null | undefined) => (minor == null ? '₹0.00' : `₹${(minor / 100).toFixed(2)}`)
+  const money = (minor: number | null | undefined) => (minor == null ? 'â‚¹0.00' : `â‚¹${(minor / 100).toFixed(2)}`)
   const address = (() => {
     try { return JSON.parse(order.deliveryAddressJson || '{}') } catch { return {} }
   })()
@@ -354,9 +357,9 @@ function DetailDrawer({
         <div className="flex items-center justify-between p-5 border-b border-gray-100 bg-gray-50">
           <div>
             <h2 className="text-lg font-bold text-gray-900">Order #{order.orderNumber}</h2>
-            <p className="text-sm text-gray-500">{order.customerEmail} · {order.outletName || 'Outlet not set'}</p>
+            <p className="text-sm text-gray-500">{order.customerEmail} Â· {order.outletName || 'Outlet not set'}</p>
           </div>
-          <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-900 transition-colors">✕</button>
+          <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-900 transition-colors">âœ•</button>
         </div>
 
         <div className="overflow-y-auto p-6 flex-1">
@@ -380,7 +383,7 @@ function DetailDrawer({
           <div className="mb-6">
             <div className="flex justify-between items-center mb-3">
               <h3 className="font-bold text-sm text-gray-900 uppercase tracking-wider">Items</h3>
-              <span className="text-xs font-medium text-restru-600">{order.items.length} item(s)</span>
+              <span className="text-xs font-medium text-bhuk-600">{order.items.length} item(s)</span>
             </div>
             <div className="border border-gray-100 rounded-xl overflow-hidden">
               {order.items.length === 0 ? (
@@ -403,7 +406,7 @@ function DetailDrawer({
                           {item.instructions && <div className="text-xs text-gray-500 italic">{item.instructions}</div>}
                           {item.modifiers.length > 0 && (
                             <div className="text-xs text-gray-600 mt-1">
-                              {item.modifiers.map(m => `+ ${m.nameSnapshot} ×${m.quantity} (₹${((m.priceDeltaMinor || 0) / 100).toFixed(2)})`).join(' · ')}
+                              {item.modifiers.map(m => `+ ${m.nameSnapshot} Ã—${m.quantity} (â‚¹${((m.priceDeltaMinor || 0) / 100).toFixed(2)})`).join(' Â· ')}
                             </div>
                           )}
                         </td>
@@ -421,7 +424,7 @@ function DetailDrawer({
           <div className="mb-6 border border-gray-100 rounded-xl p-4 bg-gray-50">
             <div className="flex justify-between items-center mb-3">
               <h3 className="font-bold text-sm text-gray-900 uppercase tracking-wider">Pricing</h3>
-              <span className="text-xs font-medium text-restru-600">Grand total</span>
+              <span className="text-xs font-medium text-bhuk-600">Grand total</span>
             </div>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between text-gray-600"><span>Subtotal</span><span>{money(order.subtotalMinor)}</span></div>
@@ -458,7 +461,7 @@ function DetailDrawer({
                         <span className={`font-medium ${statusColors[event.newStatus || 'PLACED']?.split(' ')[1] || 'text-gray-700'}`}>
                           {labelFor(event.newStatus || 'PLACED')}
                         </span>
-                        {event.actorEmail && <span className="text-xs text-gray-500">· {event.actorEmail}</span>}
+                        {event.actorEmail && <span className="text-xs text-gray-500">Â· {event.actorEmail}</span>}
                         {event.actorRole && <span className="text-xs text-gray-500 capitalize">({event.actorRole})</span>}
                       </div>
                       <p className="text-xs text-gray-500">{event.reason || '-'}</p>
@@ -472,7 +475,7 @@ function DetailDrawer({
 
           <div className="pt-6 border-t border-gray-100">
             <h3 className="font-bold text-sm text-gray-900 uppercase tracking-wider mb-3">Change status</h3>
-            <p className="text-xs text-gray-500 mb-3 text-restru-600">Server-enforced state transitions only.</p>
+            <p className="text-xs text-gray-500 mb-3 text-bhuk-600">Server-enforced state transitions only.</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {terminalStates.has(order.status) ? (
                 <button disabled className="px-4 py-2.5 rounded-lg text-sm font-medium bg-gray-100 text-gray-400 cursor-not-allowed">
@@ -508,7 +511,7 @@ function DetailDrawer({
                   autoFocus
                   value={reasonText}
                   onChange={e => setReasonText(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-restru-500 focus:border-transparent"
+                  className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-bhuk-500 focus:border-transparent"
                   onKeyDown={e => {
                     if (e.key === 'Enter' && reasonText.trim()) {
                       onStatusChange(reasonPrompt, reasonText.trim())
@@ -531,7 +534,7 @@ function DetailDrawer({
                       setReasonPrompt(null)
                       setReasonText('')
                     }}
-                    className="px-4 py-2.5 rounded-lg text-sm font-medium bg-restru-600 text-white hover:bg-restru-700"
+                    className="px-4 py-2.5 rounded-lg text-sm font-medium bg-bhuk-600 text-white hover:bg-bhuk-700"
                   >
                     Confirm
                   </button>
@@ -542,23 +545,34 @@ function DetailDrawer({
 
           <div className="pt-6 border-t border-gray-100">
             <h3 className="font-bold text-sm text-gray-900 uppercase tracking-wider mb-3">Assign delivery person</h3>
-            <p className="text-xs text-gray-500 mb-3 text-restru-600">Assign an available delivery partner to this order.</p>
+            <p className="text-xs text-gray-500 mb-3 text-bhuk-600">Assign an available delivery partner to this order.</p>
             {availablePartners.length === 0 ? (
-              <p className="text-sm text-gray-500">No delivery partners are currently online.</p>
+              <p className="text-sm text-gray-500">No delivery partners registered.</p>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {availablePartners.map((p) => (
-                  <button
-                    key={p.id}
-                    disabled={assignLoading === order.id}
-                    onClick={() => onAssignDelivery(p.id, 'Assigned by admin')}
-                    className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 ${
-                      assignLoading === order.id ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
-                    }`}
-                  >
-                    {p.userName || 'Delivery Partner'}
-                  </button>
-                ))}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                {availablePartners.map((p) => {
+                  const statusColor = p.status === 'ONLINE' ? 'bg-food-green-50 text-food-green-700 border-food-green-200' : p.status === 'BUSY' ? 'bg-food-orange-50 text-food-orange-700 border-food-orange-200' : 'bg-gray-50 text-gray-600 border-gray-200'
+                  const statusLabel = p.status ? p.status.charAt(0).toUpperCase() + p.status.slice(1).toLowerCase() : 'Unknown'
+                  const canAssign = p.status === 'ONLINE'
+                  return (
+                    <button
+                      key={p.id}
+                      disabled={assignLoading === order.id || !canAssign}
+                      onClick={() => onAssignDelivery(p.id, 'Assigned by admin')}
+                      className={`flex flex-col items-center gap-1.5 px-3 py-2.5 rounded-lg text-sm transition-colors disabled:opacity-50 ${
+                        assignLoading === order.id ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : !canAssign ? 'bg-gray-50 border border-gray-200 text-gray-500 cursor-not-allowed' : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
+                      }`}
+                    >
+                      <span className={`px-2 py-0.5 rounded text-xs font-bold ${statusColor}`}>
+                        {statusLabel}
+                      </span>
+                      <span className={`font-medium ${canAssign ? 'text-gray-900' : 'text-gray-500'}`} line-clamp={1}>
+                        {p.userName || 'Delivery Partner'}
+                      </span>
+                      <span className="text-[10px] text-gray-400">{p.status === 'OFFLINE' ? 'Not available' : p.status === 'BUSY' ? 'Currently busy' : 'Available to accept'}</span>
+                    </button>
+                  )
+                })}
               </div>
             )}
           </div>
@@ -567,3 +581,4 @@ function DetailDrawer({
     </div>
   )
 }
+

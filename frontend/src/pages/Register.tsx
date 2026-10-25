@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
+import logo from '@/assets/logo.png'
 
 export default function Register() {
   const [email, setEmail] = useState('')
@@ -31,11 +32,9 @@ export default function Register() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="w-12 h-12 bg-restru-600 rounded-xl flex items-center justify-center text-white font-bold text-2xl mx-auto mb-4">
-            R
-          </div>
+          <img src={logo} alt="Bhuk logo" className="w-16 h-16 rounded-full object-cover mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-900">Create an account</h2>
-          <p className="text-gray-500">Join Restru</p>
+          <p className="text-gray-500">Join Bhuk</p>
         </div>
 
         {error && (
@@ -112,7 +111,7 @@ export default function Register() {
 
         <p className="mt-6 text-center text-sm text-gray-600">
           Already have an account?{' '}
-          <Link to="/login" className="text-restru-600 font-medium hover:underline">
+          <Link to="/login" className="text-bhuk-600 font-medium hover:underline">
             Sign in
           </Link>
         </p>

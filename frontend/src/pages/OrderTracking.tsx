@@ -63,11 +63,11 @@ export default function OrderTracking() {
               <h3 className="font-bold text-lg text-gray-900 mb-4">Order Status</h3>
               <div className="relative">
                 <div className="h-1 bg-gray-200 rounded-full w-full"></div>
-                <div className="h-1 bg-restru-600 rounded-full" style={{ width: `${progress}%` }}></div>
+                <div className="h-1 bg-bhuk-600 rounded-full" style={{ width: `${progress}%` }}></div>
                 <div className="flex justify-between mt-4 text-xs text-gray-500">
                   {statusOrder.map((s, i) => (
                     <span key={s} className={`text-center font-medium ${
-                      i <= currentIndex ? 'text-restru-700' : 'text-gray-400'
+                      i <= currentIndex ? 'text-bhuk-700' : 'text-gray-400'
                     }`}>
                       {s.replace(/_/g, ' ').toLowerCase()}
                     </span>
@@ -85,12 +85,12 @@ export default function OrderTracking() {
                     <div className="flex-1">
                       <div className="flex justify-between">
                         <span className="font-medium text-gray-900">{item.itemName}</span>
-                        <span className="font-medium text-gray-900">₹{(item.lineTotalMinor / 100).toFixed(2)}</span>
+                        <span className="font-medium text-bhuk-600">₹{(item.lineTotalMinor / 100).toFixed(2)}</span>
                       </div>
                       <div className="flex items-center gap-2 mt-1">
                         <span className="text-sm text-gray-500">Qty: {item.quantity}</span>
                         {item.modifiers?.length && (
-                          <span className="text-xs bg-restru-50 text-restru-700 px-2 py-0.5 rounded border border-restru-100">
+                          <span className="text-xs bg-bhuk-50 text-bhuk-700 px-2 py-0.5 rounded border border-bhuk-100">
                             +{item.modifiers.map((m: any) => m.nameSnapshot).join(', ')}
                           </span>
                         )}

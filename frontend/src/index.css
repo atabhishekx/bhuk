@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --color-restru-50: #f0f9ff;
-  --color-restru-100: #e0f2fe;
-  --color-restru-500: #0ea5e9;
-  --color-restru-600: #0284c7;
-  --color-restru-700: #0369a1;
-  --color-restru-900: #0c4a6e;
+  --color-bhuk-50: #fff7ed;
+  --color-bhuk-100: #ffedd5;
+  --color-bhuk-500: #f97316;
+  --color-bhuk-600: #ea580c;
+  --color-bhuk-700: #c2410c;
+  --color-bhuk-900: #7c2d12;
 
   --color-food-red-50: #fef2f2;
   --color-food-red-500: #ef4444;
@@ -35,15 +35,15 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-restru-600 hover:bg-restru-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 shadow-sm active:scale-95;
+    @apply bg-bhuk-600 hover:bg-bhuk-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 shadow-sm active:scale-95;
   }
 
   .btn-outline {
-    @apply border-2 border-gray-300 hover:border-restru-600 hover:text-restru-600 text-gray-700 px-6 py-3 rounded-xl font-medium transition-all duration-200 active:scale-95;
+    @apply border-2 border-gray-300 hover:border-bhuk-600 hover:text-bhuk-600 text-gray-700 px-6 py-3 rounded-xl font-medium transition-all duration-200 active:scale-95;
   }
 
   .btn-ghost {
-    @apply text-gray-600 hover:text-restru-600 hover:bg-gray-100 px-4 py-2 rounded-lg transition-colors active:scale-95;
+    @apply text-gray-600 hover:text-bhuk-600 hover:bg-gray-100 px-4 py-2 rounded-lg transition-colors active:scale-95;
   }
 
   .card {
@@ -51,7 +51,7 @@
   }
 
   .input-field {
-    @apply w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-restru-500 focus:border-transparent transition-all;
+    @apply w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-bhuk-500 focus:border-transparent transition-all;
   }
 
   .label {

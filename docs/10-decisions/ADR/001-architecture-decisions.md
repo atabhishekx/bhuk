@@ -1,4 +1,4 @@
-# ADR 001: Initial Architecture and Technology Decisions
+﻿# ADR 001: Initial Architecture and Technology Decisions
 
 - **Status:** Proposed; decisions not yet approved.
 - **Date:** 2026-10-25
@@ -69,3 +69,5 @@ The product is a food delivery system for one restaurant chain, possibly with mu
 ## Approval
 
 Record approver, date, final choice, and any deviations when this ADR is accepted. Create a new ADR for material changes rather than silently rewriting the historical rationale.
+
+

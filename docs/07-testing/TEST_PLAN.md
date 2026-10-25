@@ -1,4 +1,4 @@
-# Test Plan
+﻿# Test Plan
 
 **Status:** Initial plan.
 
@@ -32,9 +32,9 @@ Verify that ordering, payment, restaurant processing, delivery assignment, and t
 - Rate limiting and error format.
 
 ### End-to-end tests
-- Browse → customize → cart → checkout → order confirmation.
-- Restaurant accepts → prepares → marks ready.
-- Partner accepts → picks up → completes delivery.
+- Browse â†’ customize â†’ cart â†’ checkout â†’ order confirmation.
+- Restaurant accepts â†’ prepares â†’ marks ready.
+- Partner accepts â†’ picks up â†’ completes delivery.
 - Customer views order history and status.
 - Cancellation and refund path.
 - Admin updates item availability and customer menu reflects it.
@@ -99,3 +99,5 @@ Run critical end-to-end and staging integration tests before release. Keep test 
 - Database migration has been tested.
 - Backup/restore and operational alerts are verified.
 - Known limitations and test evidence are documented.
+
+

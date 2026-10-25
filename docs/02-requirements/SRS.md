@@ -1,4 +1,4 @@
-# Software Requirements Specification (SRS)
+﻿# Software Requirements Specification (SRS)
 
 **Product:** Single-Chain Food Delivery System  
 **Version:** 1.0 draft  
@@ -115,7 +115,7 @@ All access must be enforced server-side and scoped to the actor's role and outle
 ## 5. Core state models
 
 ### Order state
-`PLACED → ACCEPTED → PREPARING → READY_FOR_PICKUP → PICKED_UP → OUT_FOR_DELIVERY → DELIVERED`
+`PLACED â†’ ACCEPTED â†’ PREPARING â†’ READY_FOR_PICKUP â†’ PICKED_UP â†’ OUT_FOR_DELIVERY â†’ DELIVERED`
 
 Possible terminal/exception states: `REJECTED`, `CANCELLED`, `DELIVERY_FAILED`.
 
@@ -164,3 +164,5 @@ Release cannot proceed until critical flows are tested: menu-to-order, payment v
 8. Required notification channels?
 9. Expected order volume and service hours?
 10. Required integrations with existing restaurant systems?
+
+

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import api from '@/api/axios'
 import Navbar from '@/components/Navbar'
 import { EmptyState, Loading } from '@/components/Common'
+import logo from '@/assets/logo.png'
 
 type Order = {
   id: number
@@ -50,7 +51,10 @@ export default function Orders() {
       <div className="min-h-screen bg-gray-50">
         <Navbar />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <EmptyState title="No orders yet" description="Place your first order from our menu." icon="📦" />
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <img src={logo} alt="Bhuk logo" className="w-20 h-20 rounded-full object-cover mb-4" />
+            <EmptyState title="No orders yet" description="Place your first order from our menu." icon="📦" />
+          </div>
           <div className="mt-8 text-center">
             <a href="/menu" className="btn-primary">Browse Menu</a>
           </div>
@@ -78,11 +82,11 @@ export default function Orders() {
               </div>
               <div className="flex justify-between items-center mb-3">
                 <span className="text-gray-600 text-sm">{order.items.length} item(s)</span>
-                <span className="font-bold text-restru-600">₹{(order.grandTotalMinor / 100).toFixed(2)}</span>
+                <span className="font-bold text-bhuk-600">₹{(order.grandTotalMinor / 100).toFixed(2)}</span>
               </div>
               <div className="h-1 bg-gray-100 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-restru-600"
+                  className="h-full bg-bhuk-600"
                   style={{ width: order.status === 'DELIVERED' || order.status === 'CANCELLED' || order.status === 'REJECTED' ? '100%' : '50%' }}
                 ></div>
               </div>

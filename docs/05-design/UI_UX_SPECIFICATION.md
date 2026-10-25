@@ -1,4 +1,4 @@
-# UI/UX Specification
+﻿# UI/UX Specification
 
 **Status:** UX baseline; visual design system and channel strategy are TBD.
 
@@ -95,7 +95,7 @@ Every data-driven screen should account for:
 - Clearly identify the selected delivery address and outlet.
 - Prevent accidental duplicate submission while still supporting safe retries.
 - If the total changes, show the revised amount and obtain confirmation where policy requires.
-- Never show “paid” based only on a client-side redirect.
+- Never show â€œpaidâ€ based only on a client-side redirect.
 
 ## 9. Tracking requirements
 
@@ -131,3 +131,5 @@ Test the main journeys with representative users:
 - Process a busy restaurant queue.
 - Accept and complete a delivery.
 - Reassign a delivery when the first partner declines.
+
+

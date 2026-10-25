@@ -1,6 +1,6 @@
-# API Specification
+﻿# API Specification
 
-**Status:** Draft contract — paths and schemas must be finalized in OpenAPI before implementation.
+**Status:** Draft contract â€” paths and schemas must be finalized in OpenAPI before implementation.
 
 ## 1. Conventions
 
@@ -120,3 +120,5 @@ CRUD means the specific GET/POST/PATCH/DELETE operations should be individually 
 - Add contract tests for critical endpoints.
 - Document idempotency behavior and retry semantics.
 - Never expose internal provider secrets or another customer's records.
+
+

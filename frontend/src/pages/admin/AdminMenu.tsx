@@ -3,6 +3,8 @@ import api from '@/api/axios'
 import Navbar from '@/components/Navbar'
 import { Loading } from '@/components/Common'
 
+import logo from '@/assets/logo.png'
+
 type Category = {
   id: number
   name: string
@@ -21,25 +23,37 @@ type Item = {
   categoryName: string
 }
 
+type Outlet = {
+  id: number
+  name: string
+  address?: string
+  city?: string
+  state?: string
+  pincode?: string
+  status?: string
+}
+
 type ModalType = 'category' | 'item' | null
 
 export default function AdminMenu() {
   const [categories, setCategories] = useState<Category[]>([])
   const [items, setItems] = useState<Item[]>([])
+  const [outlets, setOutlets] = useState<Outlet[]>([])
+  const [selectedOutletId, setSelectedOutletId] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
   const [modal, setModal] = useState<ModalType>(null)
   const [modalType, setModalType] = useState<'create' | 'edit'>('create')
-const [formData, setFormData] = useState<any>({})
+  const [formData, setFormData] = useState<any>({})
 
   useEffect(() => {
     fetchData()
-  }, [])
+  }, [selectedOutletId])
 
   async function fetchData() {
     try {
       const [catRes, itemRes] = await Promise.all([
-        api.get('/menu/categories'),
-        api.get('/menu/items'),
+        api.get('/menu/categories', { params: { outletId: selectedOutletId || undefined } }),
+        api.get('/menu/items', { params: { outletId: selectedOutletId || undefined } }),
       ])
       setCategories(catRes.data.data)
       setItems(itemRes.data.data)
@@ -50,13 +64,39 @@ const [formData, setFormData] = useState<any>({})
     }
   }
 
+  async function fetchOutlets() {
+    try {
+      const res = await api.get('/api/v1/admin/outlets')
+      setOutlets(res.data.data)
+      if (outlets.length === 0 && res.data.data.length > 0) {
+        setSelectedOutletId(res.data.data[0].id)
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  useEffect(() => {
+    fetchOutlets()
+  }, [])
+
   async function createCategory(data: { name: string; description?: string; displayOrder?: number; active?: boolean }) {
     try {
-      await api.post('/api/v1/menu/admin/categories', data, { params: { outletId: 1 } })
+      await api.post('/api/v1/menu/admin/categories', data, { params: { outletId: selectedOutletId } })
       await fetchData()
       setModal(null)
     } catch (e: any) {
       alert(e.response?.data?.error?.message || 'Failed to create category')
+    }
+  }
+
+  async function updateCategory(id: number, data: any) {
+    try {
+      await api.put(`/api/v1/menu/admin/categories/${id}`, data, { params: { outletId: selectedOutletId } })
+      await fetchData()
+      setModal(null)
+    } catch (e: any) {
+      alert(e.response?.data?.error?.message || 'Failed to update category')
     }
   }
 
@@ -72,11 +112,21 @@ const [formData, setFormData] = useState<any>({})
 
   async function createItem(data: any) {
     try {
-      await api.post('/api/v1/menu/admin/items', data, { params: { outletId: 1 } })
+      await api.post('/api/v1/menu/admin/items', data, { params: { outletId: selectedOutletId } })
       await fetchData()
       setModal(null)
     } catch (e: any) {
       alert(e.response?.data?.error?.message || 'Failed to create item')
+    }
+  }
+
+  async function updateItem(id: number, data: any) {
+    try {
+      await api.put(`/api/v1/menu/admin/items/${id}`, data, { params: { outletId: selectedOutletId } })
+      await fetchData()
+      setModal(null)
+    } catch (e: any) {
+      alert(e.response?.data?.error?.message || 'Failed to update item')
     }
   }
 
@@ -90,6 +140,15 @@ const [formData, setFormData] = useState<any>({})
     }
   }
 
+  async function toggleAvailability(id: number, available: boolean) {
+    try {
+      await api.put(`/api/v1/menu/admin/items/${id}`, { available }, { params: { outletId: selectedOutletId } })
+      await fetchData()
+    } catch (e: any) {
+      alert(e.response?.data?.error?.message || 'Failed to update availability')
+    }
+  }
+
   if (loading) return <Loading />
 
   return (
@@ -98,15 +157,28 @@ const [formData, setFormData] = useState<any>({})
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Menu Management</h1>
-            <p className="text-gray-500">Manage categories and menu items</p>
+          <img src={logo} alt="Bhuk logo" className="w-10 h-10 rounded-full object-cover inline-block mr-3 align-middle" />
+            <h1 className="text-2xl font-bold text-gray-900 inline-block align-middle">Menu Management</h1>
+            <p className="text-gray-500">Manage categories and menu items across the chain</p>
           </div>
-          <button
-            onClick={() => { setModalType('create'); setFormData({}); setModal('category') }}
-            className="btn-primary"
-          >
-            + Add Category
-          </button>
+          <div className="flex gap-3">
+            <select
+              value={selectedOutletId || ''}
+              onChange={(e) => setSelectedOutletId(e.target.value ? parseInt(e.target.value) : null)}
+              className="input-field"
+            >
+              <option value="">All outlets (chain-wide)</option>
+              {outlets.map((o) => (
+                <option key={o.id} value={o.id}>{o.name}</option>
+              ))}
+            </select>
+            <button
+              onClick={() => { setModalType('create'); setFormData({}); setModal('category') }}
+              className="btn-primary"
+            >
+              + Add Category
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -131,7 +203,7 @@ const [formData, setFormData] = useState<any>({})
                             setFormData({ name: cat.name, description: cat.description, displayOrder: cat.displayOrder, active: cat.active })
                             setModal('category')
                           }}
-                          className="text-xs text-restru-600 hover:text-restru-700"
+                          className="text-xs text-bhuk-600 hover:text-bhuk-700"
                         >
                           Edit
                         </button>
@@ -173,11 +245,14 @@ const [formData, setFormData] = useState<any>({})
                       <div className="flex-1 min-w-0">
                         <div className="flex justify-between items-center mb-1">
                           <h4 className="font-bold text-gray-900">{item.name}</h4>
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            item.available ? 'bg-food-green-100 text-food-green-700' : 'bg-gray-100 text-gray-500'
-                          }`}>
-                            {item.available ? 'Available' : 'Unavailable'}
-                          </span>
+                          <button
+                            onClick={() => toggleAvailability(item.id, !item.available)}
+                            className={`px-2 py-1 rounded-full text-xs font-medium transition-colors ${
+                              item.available ? 'bg-food-green-100 text-food-green-700' : 'bg-gray-100 text-gray-500'
+                            }`}
+                          >
+                            {item.available ? 'Available' : 'Out of Stock'}
+                          </button>
                         </div>
                         <p className="text-sm text-gray-500">{item.description || 'No description'}</p>
                         <p className="text-sm text-gray-500">
@@ -191,7 +266,7 @@ const [formData, setFormData] = useState<any>({})
                             setFormData({ name: item.name, description: item.description, basePriceMinor: item.basePriceMinor, categoryId: (item as any).categoryId, active: item.active, available: item.available })
                             setModal('item')
                           }}
-                          className="text-xs text-restru-600 hover:text-restru-700"
+                          className="text-xs text-bhuk-600 hover:text-bhuk-700"
                         >
                           Edit
                         </button>
@@ -218,7 +293,7 @@ const [formData, setFormData] = useState<any>({})
               <h3 className="font-bold text-lg text-gray-900 mb-6">
                 {modalType === 'create' ? 'Add Category' : 'Edit Category'}
               </h3>
-              <form onSubmit={(e) => { e.preventDefault(); createCategory(formData) }} className="space-y-4">
+              <form onSubmit={(e) => { e.preventDefault(); modalType === 'create' ? createCategory(formData) : updateCategory(formData.id, formData) }} className="space-y-4">
                 <div>
                   <label className="label">Category Name</label>
                   <input
@@ -287,7 +362,8 @@ const [formData, setFormData] = useState<any>({})
               <h3 className="font-bold text-lg text-gray-900 mb-6">
                 {modalType === 'create' ? 'Add Item' : 'Edit Item'}
               </h3>
-              <form onSubmit={(e) => { e.preventDefault(); createItem(formData) }} className="space-y-4">
+              <form onSubmit={(e) => { e.preventDefault(); modalType === 'create' ? createItem(formData) : updateItem(formData.id, formData) }} className="space-y-4">
+                <input type="hidden" name="id" value={formData.id || ''} />
                 <div>
                   <label className="label">Item Name</label>
                   <input

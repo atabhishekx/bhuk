@@ -1,6 +1,6 @@
-# Business Rules
+﻿# Business Rules
 
-**Status:** Draft — business-owner confirmation required.
+**Status:** Draft â€” business-owner confirmation required.
 
 ## 1. Chain and outlet model
 
@@ -89,3 +89,5 @@ The exact tax basis, discount order, rounding mode, delivery fee, minimum order,
 - Refund policy and escalation process.
 - Delivery proof requirements (OTP, photo, signature, or none).
 - Cash-on-delivery availability and cash reconciliation.
+
+

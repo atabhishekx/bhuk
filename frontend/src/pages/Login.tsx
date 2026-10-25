@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
+import logo from '@/assets/logo.png'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -15,8 +16,11 @@ export default function Login() {
     setError('')
     setLoading(true)
     try {
-      await login(email, password)
-      navigate('/menu')
+      const res = await login(email, password)
+      const roles = res.data?.user?.roles ?? []
+      if (roles.includes('ADMIN')) navigate('/admin/dashboard')
+      else if (roles.includes('DELIVERY_GUY')) navigate('/delivery/dashboard')
+      else navigate('/menu')
     } catch (err: any) {
       setError(err.response?.data?.error?.message || 'Login failed. Please try again.')
     } finally {
@@ -28,11 +32,9 @@ export default function Login() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="w-12 h-12 bg-restru-600 rounded-xl flex items-center justify-center text-white font-bold text-2xl mx-auto mb-4">
-            R
-          </div>
+          <img src={logo} alt="Bhuk logo" className="w-16 h-16 rounded-full object-cover mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-900">Welcome back</h2>
-          <p className="text-gray-500">Sign in to your account</p>
+          <p className="text-gray-500">Sign in to your Bhuk account</p>
         </div>
 
         {error && (
@@ -75,7 +77,7 @@ export default function Login() {
 
         <p className="mt-6 text-center text-sm text-gray-600">
           Don't have an account?{' '}
-          <Link to="/register" className="text-restru-600 font-medium hover:underline">
+          <Link to="/register" className="text-bhuk-600 font-medium hover:underline">
             Register
           </Link>
         </p>

@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import type { ReactNode } from 'react'
 import { AuthProvider, useAuth } from '@/contexts/AuthContext'
+import { Loading } from '@/components/Common'
 import Login from '@/pages/Login'
 import Register from '@/pages/Register'
 import Menu from '@/pages/Menu'
@@ -15,7 +16,8 @@ import AdminOrders from '@/pages/admin/AdminOrders'
 import AdminMenu from '@/pages/admin/AdminMenu'
 
 function RoleRoute({ children, allowedRoles }: { children: ReactNode, allowedRoles: string[] }) {
-  const { user } = useAuth()
+  const { user, isLoading } = useAuth()
+  if (isLoading) return <Loading />
   if (!user) return <Navigate to="/login" replace />
   const hasRole = allowedRoles.some(r => user.roles.includes(r))
   if (!hasRole) return <Navigate to="/dashboard" replace />

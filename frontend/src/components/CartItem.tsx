@@ -36,7 +36,7 @@ export default function CartItem({ item, onRemove, onQtyChange }: CartItemProps)
             +
           </button>
         </div>
-        <span className="font-semibold text-restru-600">₹{(lineTotal / 100).toFixed(2)}</span>
+        <span className="font-semibold text-bhuk-600">₹{(lineTotal / 100).toFixed(2)}</span>
         <button
           onClick={onRemove}
           className="text-food-red-500 hover:text-food-red-700 text-sm font-medium"

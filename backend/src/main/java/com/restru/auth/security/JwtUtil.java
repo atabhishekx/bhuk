@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.stream.Collectors;
 import java.util.function.Function;
 
 /**
@@ -21,6 +23,7 @@ import java.util.function.Function;
 public class JwtUtil {
 
     private final SecretKey key;
+    private final long expirationMs;
     public JwtUtil(@Value("${app.jwt.secret:}") String secret,
                    @Value("${app.jwt.expiration-ms:86400000}") long expirationMs) {
         if (secret == null || secret.isBlank()) {
@@ -31,6 +34,7 @@ public class JwtUtil {
             throw new IllegalStateException("app.jwt.secret must be at least 32 characters (256 bits) for HS256");
         }
         this.key = Keys.hmacShaKeyFor(keyBytes);
+        this.expirationMs = expirationMs;
     }
 
     public String extractUsername(String token) {
@@ -64,7 +68,17 @@ public class JwtUtil {
     }
 
     public String generateToken(User user) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'generateToken'");
+        String roles = user.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+        Date now = new Date();
+        Date expiry = new Date(now.getTime() + expirationMs);
+        return Jwts.builder()
+                .subject(user.getUsername())
+                .claim("roles", roles)
+                .issuedAt(now)
+                .expiration(expiry)
+                .signWith(key)
+                .compact();
     }
 }

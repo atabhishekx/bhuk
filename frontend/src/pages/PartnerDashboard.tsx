@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import api from '@/api/axios'
 import Navbar from '@/components/Navbar'
 import { Loading, EmptyState } from '@/components/Common'
@@ -111,22 +111,22 @@ export default function PartnerDashboard() {
               <button
                 onClick={() => setAvailability('ONLINE')}
                 className={`w-full py-3 rounded-xl text-sm font-medium transition-colors ${
-                  partnerStatus === 'ONLINE' ? 'bg-restru-600 text-white shadow-sm' : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
+                  partnerStatus === 'ONLINE' ? 'bg-bhuk-600 text-white shadow-sm' : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
                 }`}
               >
-                🟢 Go Online
+                ðŸŸ¢ Go Online
               </button>
               <button
                 onClick={() => setAvailability('OFFLINE')}
                 className="w-full py-3 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
               >
-                ⚫ Go Offline
+                âš« Go Offline
               </button>
               <button
                 onClick={() => setAvailability('BUSY')}
                 className="w-full py-3 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
               >
-                🟡 Busy
+                ðŸŸ¡ Busy
               </button>
             </div>
           </div>
@@ -146,14 +146,14 @@ export default function PartnerDashboard() {
             <p className="text-sm text-gray-500 mb-4">
               {assignments.filter(a => a.state === 'COMPLETED').length} deliveries
             </p>
-            <div className="text-2xl font-bold text-gray-900">₹0.00</div>
+            <div className="text-2xl font-bold text-gray-900">â‚¹0.00</div>
           </div>
         </div>
 
         <div className="mt-8">
           <h3 className="font-bold text-lg text-gray-900 mb-4">Assignment History</h3>
           {assignments.length === 0 ? (
-            <EmptyState title="No assignments" description="No delivery assignments yet." icon="🚚" />
+            <EmptyState title="No assignments" description="No delivery assignments yet." icon="ðŸšš" />
           ) : (
             <div className="space-y-3">
               {assignments.map((a) => (
@@ -177,7 +177,7 @@ export default function PartnerDashboard() {
                       </div>
                     )}
                     {a.state === 'ACCEPTED' && (
-                      <button onClick={() => markPickedUp(a.id)} className="px-3 py-1 bg-restru-600 text-white text-sm rounded hover:bg-restru-700">
+                      <button onClick={() => markPickedUp(a.id)} className="px-3 py-1 bg-bhuk-600 text-white text-sm rounded hover:bg-bhuk-700">
                         Picked Up
                       </button>
                     )}
@@ -196,3 +196,4 @@ export default function PartnerDashboard() {
     </div>
   )
 }
+
