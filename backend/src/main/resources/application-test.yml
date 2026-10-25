@@ -1,0 +1,25 @@
+# Test profile — uses the same MySQL but a separate test database.
+# Create the database manually: CREATE DATABASE restru_db_test;
+spring:
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:restru_db_test}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
+
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: create
+
+  flyway:
+    enabled: false
+
+# --- Razorpay (sandbox test) ---
+app:
+  razorpay:
+    webhook-secret: test_webhook_secret_12345
+
+logging:
+  level:
+    com.restru: WARN
+

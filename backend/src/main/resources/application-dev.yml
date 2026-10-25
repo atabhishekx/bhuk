@@ -1,0 +1,16 @@
+# Development profile — XAMPP MySQL defaults
+# Activate with: --spring.profiles.active=dev
+
+spring:
+  jpa:
+    show-sql: true
+
+  flyway:
+    clean-disabled: false
+
+logging:
+  level:
+    com.restru: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+

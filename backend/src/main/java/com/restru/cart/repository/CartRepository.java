@@ -1,0 +1,16 @@
+package com.restru.cart.repository;
+
+import com.restru.cart.entity.Cart;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+/**
+ * Data access for {@link Cart}.
+ */
+@Repository
+public interface CartRepository extends JpaRepository<Cart, Long> {
+
+    Optional<Cart> findByCustomerId(Long customerId);
+}
