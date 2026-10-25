@@ -42,7 +42,7 @@ Needs oversight of orders, menu availability, outlets, delivery coverage, users,
 ## 4. Restaurant operations screens
 
 - Staff sign-in.
-- Incoming order queue with status and elapsed time.
+- Incoming order queue with status and elapsed time. 
 - Order detail with item/modifier breakdown.
 - Accept/reject flow with reason.
 - Preparation workflow.
