@@ -1,0 +1,9 @@
+flowchart LR
+ U[Customer / Staff / Delivery / Admin] --> UI[React + TypeScript + Vite]
+ UI -->|REST API| API[Spring Boot / Java 17]
+ API --> SEC[Spring Security + JWT]
+ SEC --> SVC[Service Layer / Validation]
+ SVC --> REPO[Spring Data JPA]
+ REPO --> DB[(MySQL)]
+ MIG[Flyway migrations] --> DB
+ SVC -. partial integration .-> PAY[Payment gateway]

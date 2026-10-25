@@ -8,7 +8,10 @@ A single-chain food delivery system built with Spring Boot and React. It covers 
 
 ## Table of Contents
 
+- [Overview](#overview)
 - [Features](#features)
+- [Screenshots](#screenshots)
+- [Diagrams](#diagrams)
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
 - [Prerequisites](#prerequisites)
@@ -20,17 +23,38 @@ A single-chain food delivery system built with Spring Boot and React. It covers 
 - [Contributing](#contributing)
 - [License](#license)
 
+## Overview
+
+Bhuk is a college project that implements a complete end-to-end food delivery platform. The system is divided into four primary user roles:
+
+- **Customer**: Browse the menu, customize items, manage the cart, checkout with delivery address validation, pay via Razorpay, and track orders in real time.
+- **Restaurant Staff**: Manage orders from a staff dashboard, accept or reject orders, and update preparation status.
+- **Delivery Partner**: Go online, accept delivery assignments, and update pickup/delivery status.
+- **Administrator**: Manage menu items, outlets, users/roles, orders, and system configuration.
+
 ## Features
 
 - **Customer Experience**: Browse menu, customize items, manage cart, checkout with delivery address validation, and track orders in real-time
 - **Restaurant Operations**: Staff dashboard for order queue management, accept/reject orders, and update preparation status
 - **Delivery Management**: Delivery partner dashboard for availability, order assignments, pickup/delivery updates, and issue reporting
 - **Admin Panel**: Manage menu, outlets, users/roles, orders, and system configuration
-- **Order Lifecycle**: Full order state machine (Placed â†’ Accepted â†’ Preparing â†’ Ready for Pickup â†’ Picked Up â†’ Out for Delivery â†’ Delivered)
+- **Order Lifecycle**: Full order state machine (Placed → Accepted → Preparing → Ready for Pickup → Picked Up → Out for Delivery → Delivered)
 - **Payment Integration**: Razorpay integration with webhook support and idempotent order creation
 - **Role-Based Access Control**: Secure endpoints with JWT authentication and role-based authorization
 
 ## Screenshots
+
+### Customer-facing screenshots
+
+![Customer menu](Bhuk_Final_Report_Presentation_and_Images/Project_Screenshots/Screenshot_01_Customer_Menu.png)
+
+Customer menu — browse available dishes and add items to cart.
+
+![Customer login](Bhuk_Final_Report_Presentation_and_Images/Project_Screenshots/Screenshot_02_Customer_Login.png)
+
+Customer login page — authenticate to place orders and track delivery.
+
+### Cart and dashboard screenshots
 
 ![Customer cart page](display_image/cart-page.png)
 
@@ -40,21 +64,86 @@ Customer cart page — browse the menu, review your cart, and proceed to checkou
 
 Main customer dashboard — browse the menu, track orders, and manage your account.
 
-![Admin order tracking](display_image/admin_order_tracking dashboard.png)
+### Admin screenshots
+
+![Admin dashboard](Bhuk_Final_Report_Presentation_and_Images/Project_Screenshots/Screenshot_03_Admin_Dashboard.png)
+
+Admin dashboard — system overview and administrative controls.
+
+![Admin order tracking](display_image/admin_order_tracking%20dashboard.png)
 
 Admin order tracking — monitor order status changes and delivery assignments from the admin panel.
 
-![Delivery partner dashboard](display_image/delivery_guy dashboard.png)
+![Order management](Bhuk_Final_Report_Presentation_and_Images/Project_Screenshots/Screenshot_04_Order_Management.png)
+
+Order management — view and manage all customer orders.
+
+![Order details](Bhuk_Final_Report_Presentation_and_Images/Project_Screenshots/Screenshot_05_Order_Details.png)
+
+Order details — view full order information including items, customer, and delivery status.
+
+![Menu management](Bhuk_Final_Report_Presentation_and_Images/Project_Screenshots/Screenshot_06_Menu_Management.png)
+
+Menu management — add, edit, and remove menu items.
+
+### Delivery partner screenshots
+
+![Delivery partner dashboard](display_image/delivery_guy%20dashboard.png)
 
 Delivery partner dashboard — go online, accept deliveries, and update pickup and delivery status.
 
-![Status changes and delivery assignment](display_image/status changes delivery assignement.png)
+![Status changes and delivery assignment](display_image/status%20changes%20delivery%20assignement.png)
 
 Order lifecycle view — status changes and delivery assignment in real time.
+
+## Diagrams
+
+### System Architecture
+
+![System Architecture Diagram](Bhuk_Final_Report_Presentation_and_Images/Diagrams/Diagram_01_System_Architecture.png)
+
+High-level system architecture showing backend, frontend, database, and external services.
+
+### Use Case Diagram
+
+![Use Case Diagram](Bhuk_Final_Report_Presentation_and_Images/Diagrams/Diagram_02_Use_Case.png)
+
+Use case diagram depicting interactions between customers, restaurant staff, delivery partners, and administrators.
+
+### Order Flow Diagram
+
+![Order Flow Diagram](Bhuk_Final_Report_Presentation_and_Images/Diagrams/Diagram_03_Order_Flow.png)
+
+End-to-end order flow from placement to delivery.
+
+### ER Diagram
+
+![ER Diagram](Bhuk_Final_Report_Presentation_and_Images/Diagrams/Diagram_04_ER_Diagram.png)
+
+Entity-relationship diagram showing the database schema and relationships.
+
+### Class Diagram
+
+![Class Diagram](Bhuk_Final_Report_Presentation_and_Images/Diagrams/Diagram_05_Class_Diagram.png)
+
+Class diagram showing the core domain model and relationships between entities.
+
+### Order State Machine
+
+![Order State Machine](Bhuk_Final_Report_Presentation_and_Images/Diagrams/Diagram_06_Order_State_Machine.png)
+
+Order state machine showing all possible order states and transitions.
+
+### Order Sequence Diagram
+
+![Order Sequence Diagram](Bhuk_Final_Report_Presentation_and_Images/Diagrams/Diagram_07_Order_Sequence.png)
+
+Sequence diagram showing the message flow between actors during the order lifecycle.
 
 ## Tech Stack
 
 ### Backend
+
 - **Framework**: [Spring Boot 3.2.5](https://spring.io/projects/spring-boot)
 - **Language**: Java 17
 - **Database**: MySQL with [Flyway](https://flywaydb.org/) migrations
@@ -62,6 +151,7 @@ Order lifecycle view — status changes and delivery assignment in real time.
 - **Build Tool**: Maven
 
 ### Frontend
+
 - **Framework**: [React 19](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
 - **Build Tool**: [Vite](https://vitejs.dev/)
 - **Routing**: [React Router DOM](https://reactrouter.com/)
@@ -69,23 +159,37 @@ Order lifecycle view — status changes and delivery assignment in real time.
 - **HTTP Client**: [Axios](https://axios-http.com/)
 - **Linting**: [oxlint](https://oxc.rs/)
 
+### Additional
+
+- **Payment**: Razorpay integration with webhook support
+- **Authentication**: JWT-based stateless authentication
+- **Container**: Not containerized by default (runs directly on host)
+
 ## Project Structure
 
 ```
 restru/
-â”œâ”€â”€ backend/          # Spring Boot REST API
-â”‚   â”œâ”€â”€ src/main/     # Application source code
-â”‚   â””â”€â”€ src/test/     # Backend tests
-â”œâ”€â”€ frontend/         # React + Vite web application
-â”‚   â””â”€â”€ src/          # Frontend source code
-â”œâ”€â”€ docs/             # Project documentation (SRS, API spec, architecture, etc.)
-â”œâ”€â”€ run.ps1           # Script to start both backend and frontend
-â””â”€â”€ .env.example      # Environment variables template
+├── backend/                    # Spring Boot REST API
+│   ├── src/main/               # Application source code
+│   └── src/test/               # Backend tests
+├── frontend/                   # React + Vite web application
+│   └── frontend/               # Frontend source code
+├── main-page/                  # Bhuk Animated Landing Page
+├── Bhuk_Final_Report_Presentation_and_Images/
+│   ├── Project_Screenshots/    # UI screenshots for documentation
+│   └── Diagrams/               # Architecture and design diagrams
+├── display_image/              # Additional dashboard screenshots
+├── docs/                       # Project documentation (SRS, API spec, architecture, etc.)
+├── mysql-data/                 # MySQL data directory
+├── logo.png                    # Project logo
+├── run.ps1                     # Script to start both backend and frontend (Windows)
+├── .env.example                # Environment variables template
+└── readme.md                   # This file
 ```
 
 ## Prerequisites
 
-- [Java 17 JDK](https://adoptium.net/) 
+- [Java 17 JDK](https://adoptium.net/)
 - [Maven](https://maven.apache.org/) (or use included `mvnw`)
 - [Node.js](https://nodejs.org/) (v18+ recommended)
 - [MySQL](https://www.mysql.com/) (e.g., via [XAMPP](https://www.apachefriends.org/))
@@ -138,7 +242,7 @@ cd backend
 
 **Frontend:**
 ```bash
-cd frontend
+cd frontend/frontend
 npm install
 npm run dev
 ```
@@ -157,17 +261,18 @@ The application will be available at:
 | `DB_USERNAME` | Database username | `root` |
 | `DB_PASSWORD` | Database password | (empty) |
 | `SERVER_PORT` | Backend server port | `8080` |
-| `JWT_SECRET` | Secret key for JWT tokens (generate a strong random string) | â€” |
+| `JWT_SECRET` | Secret key for JWT tokens (generate a strong random string) | — |
 | `JWT_EXPIRATION_MS` | JWT token expiration in milliseconds | `86400000` (24h) |
 | `APP_CORS_ALLOWED_ORIGINS` | Allowed CORS origins | `http://localhost:5173` |
-| `RAZORPAY_KEY_ID` | Razorpay API key ID (test/live) | â€” |
-| `RAZORPAY_KEY_SECRET` | Razorpay API key secret | â€” |
-| `RAZORPAY_WEBHOOK_SECRET` | Razorpay webhook secret | â€” |
+| `RAZORPAY_KEY_ID` | Razorpay API key ID (test/live) | — |
+| `RAZORPAY_KEY_SECRET` | Razorpay API key secret | — |
+| `RAZORPAY_WEBHOOK_SECRET` | Razorpay webhook secret | — |
 | `LOG_LEVEL` | Logging level | `INFO` |
 
 ## Available Scripts
 
 ### Backend
+
 ```bash
 ./mvnw clean install    # Build the project
 ./mvnw test            # Run tests
@@ -175,6 +280,7 @@ The application will be available at:
 ```
 
 ### Frontend
+
 ```bash
 npm run dev      # Start development server
 npm run build    # Build for production
@@ -184,7 +290,7 @@ npm run lint     # Run linter
 
 ## API Documentation
 
-Detailed API specifications are available in the `docs/04-api/` directory. The backend exposes RESTful endpoints under `/api/v1`.
+Detailed API specifications are available in the `docs/04-api/API_SPECIFICATION.md` file. The backend exposes RESTful endpoints under `/api/v1`.
 
 ## Testing
 
@@ -209,5 +315,3 @@ Please follow the existing code style and ensure tests pass before submitting.
 ## License
 
 This project is part of a college project. All rights reserved.
-
-

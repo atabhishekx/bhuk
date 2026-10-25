@@ -46,9 +46,10 @@ public class MenuController {
     @GetMapping("/items")
     public ResponseEntity<ApiResponse<List<ItemResponse>>> listItems(
             @RequestParam(required = false) Long outletId,
-            @RequestParam(required = false) Long categoryId) {
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Boolean all) {
 
-        List<ItemResponse> items = menuService.listItems(outletId, categoryId);
+        List<ItemResponse> items = menuService.listItems(outletId, categoryId, Boolean.TRUE.equals(all));
         return ResponseEntity.ok(ApiResponse.success(items));
     }
 

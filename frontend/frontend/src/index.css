@@ -168,14 +168,19 @@ h1,h2,h3,h4 { font-family: Manrope, 'DM Sans', sans-serif; letter-spacing: -.035
 
 /* Form Inputs */
 .input-field {
-  width: 100%;
-  background: #fffefa;
-  border: 1.5px solid #e6ded2;
-  border-radius: 0.875rem;
-  padding: 0.75rem 1rem;
-  font-size: 0.9375rem;
-  color: var(--bhuk-ink);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    width: 89%;
+    margin-left: 49px;
+    left: 20px;
+    padding-left: 50px;
+    background: #fffefa;
+    padding-left: 50px;
+    border: 1.5px solid #e6ded2;
+    border-radius: 0.875rem;
+    padding: 0.875rem 1rem;
+    min-height: 2.75rem;
+    font-size: 0.9375rem;
+    color: var(--bhuk-ink);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .input-field::placeholder { color: #aaa9a1; }
 .input-field:focus {
@@ -450,9 +455,10 @@ h1,h2,h3,h4 { font-family: Manrope, 'DM Sans', sans-serif; letter-spacing: -.035
   display: none;
   position: fixed;
   inset: 0;
-  z-index: 58;
+  z-index: 59;
   background: rgba(38, 37, 31, 0.4);
   backdrop-filter: blur(2px);
+  cursor: pointer;
 }
 @media (max-width: 680px) {
   .bhuk-mobile-overlay { display: block; }

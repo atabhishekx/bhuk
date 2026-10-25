@@ -1,0 +1,10 @@
+flowchart LR
+ C[Customer] --> A((Browse menu))
+ C --> B((Manage cart))
+ C --> D((Checkout / place order))
+ C --> E((Track order))
+ S[Restaurant staff] --> F((Process orders))
+ S --> G((Manage menu))
+ DP[Delivery partner] --> H((Update delivery))
+ AD[Administrator] --> I((Manage users and reports))
+ PG[Payment gateway] --> D

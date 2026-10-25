@@ -103,7 +103,6 @@ export default function AdminOrders() {
 
   const fetchOrders = useCallback(async () => {
     try {
-      setLoading(true)
       const params: Record<string, string> = {}
       if (statusFilter) params.status = statusFilter
       if (query.trim()) params.q = query.trim()
@@ -111,16 +110,13 @@ export default function AdminOrders() {
       const data = res.data.data ?? []
       setOrders(data)
       setLastRefreshed(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }))
-      if (selected) {
-        const updated = data.find(o => o.id === selected.id)
-        if (updated) setSelected(updated)
-      }
+      setSelected(prev => (prev ? (data.find(o => o.id === prev.id) ?? prev) : null))
     } catch (e: any) {
       setError(e.response?.data?.error?.message || 'Failed to load orders')
     } finally {
       setLoading(false)
     }
-  }, [statusFilter, query, selected])
+  }, [statusFilter, query])
 
   const fetchAvailablePartners = useCallback(async () => {
     try {
@@ -233,10 +229,10 @@ export default function AdminOrders() {
                   onChange={e => setQuery(e.target.value)}
                   className="input-field"
                 />
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <button
                     onClick={() => setStatusFilter(null)}
-                    className={`btn ${!statusFilter ? 'btn-primary' : 'btn-outline'} btn-sm flex-1`}
+                    className={`btn ${!statusFilter ? 'btn-primary' : 'btn-outline'} btn-sm text-xs`}
                   >
                     All
                   </button>
@@ -244,7 +240,7 @@ export default function AdminOrders() {
                     <button
                       key={s}
                       onClick={() => setStatusFilter(s)}
-                      className={`btn ${statusFilter === s ? 'btn-primary' : 'btn-outline'} btn-sm flex-1`}
+                      className={`btn ${statusFilter === s ? 'btn-primary' : 'btn-outline'} btn-sm text-xs whitespace-nowrap`}
                     >
                       {labelFor(s)}
                     </button>

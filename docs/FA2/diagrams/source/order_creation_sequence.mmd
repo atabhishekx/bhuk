@@ -1,0 +1,46 @@
+# Order Creation Sequence Diagram - FA2
+
+```mermaid
+sequenceDiagram
+    participant C as Customer
+    participant FC as Frontend
+    participant OC as OrderController
+    participant OS as OrderService
+    participant CS as CartService
+    participant ID as IdempotencyService
+    participant DB as Database
+    
+    C->>FC: Add items to cart
+    FC->>OC: POST /api/v1/cart/items
+    OC->>CS: addToCart()
+    CS->>DB: Save cart items
+    DB-->>CS: Success
+    CS-->>OC: Cart updated
+    OC-->>FC: 201 Created
+    
+    C->>FC: Checkout and place order
+    FC->>OC: POST /api/v1/orders (with idempotencyKey)
+    OC->>OS: createOrder()
+    OS->>ID: Check idempotency key
+    ID->>DB: Query idempotency record
+    DB-->>ID: Not found
+    ID-->>OS: Proceed with creation
+    
+    OS->>CS: getCart()
+    CS->>DB: Fetch cart with items
+    DB-->>CS: Cart data
+    CS-->>OS: CartResponse
+    
+    OS->>DB: Validate items & prices
+    DB-->>OS: Current prices
+    
+    OS->>OS: Compute totals (subtotal + tax + delivery)
+    OS->>DB: Create Order
+    OS->>DB: Create OrderItems with snapshots
+    OS->>DB: Create OrderStatusEvent (PLACED)
+    OS->>DB: Create IdempotencyRecord
+    
+    OS-->>OC: OrderResponse
+    OC-->>FC: 201 Created
+    FC-->>C: Order placed successfully
+```

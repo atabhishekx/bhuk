@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import logo from '@/assets/logo.png'
@@ -9,11 +9,20 @@ export default function Navbar({ cartCount = 0 }: NavbarProps) {
   const { user, logout } = useAuth()
   const location = useLocation()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const close = useCallback(() => setMobileOpen(false), [])
+  const toggle = useCallback(() => setMobileOpen(v => !v), [])
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileOpen(false)
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [])
   const [scrolled, setScrolled] = useState(false)
   const isAdmin = user?.roles.includes('ADMIN')
   const isDeliveryGuy = user?.roles.includes('DELIVERY_GUY')
   const linkClass = (path: string) => `bhuk-nav-link ${location.pathname === path ? 'active' : ''}`
-  const close = () => setMobileOpen(false)
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 8)
@@ -64,7 +73,7 @@ export default function Navbar({ cartCount = 0 }: NavbarProps) {
             </div>
           )}
           {user && <button className="bhuk-signout" onClick={logout} type="button">Sign out <span aria-hidden="true">↗</span></button>}
-          <button className="bhuk-mobile-toggle" type="button" aria-label={mobileOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={mobileOpen} aria-controls="mobile-menu" onClick={() => setMobileOpen(v => !v)}>{mobileOpen ? '×' : '☰'}</button>
+          <button className="bhuk-mobile-toggle" type="button" aria-label={mobileOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={mobileOpen} aria-controls="mobile-menu" onClick={toggle}>{mobileOpen ? '×' : '☰'}</button>
         </div>
       </nav>
       {mobileOpen && <div className="bhuk-mobile-overlay" onClick={close} aria-hidden="true" />}

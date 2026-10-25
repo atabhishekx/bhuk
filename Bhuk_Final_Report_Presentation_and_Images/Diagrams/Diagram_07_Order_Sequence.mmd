@@ -1,0 +1,15 @@
+sequenceDiagram
+ actor Customer
+ participant UI as React UI
+ participant API as Spring Boot API
+ participant Svc as OrderService
+ participant DB as MySQL
+ Customer->>UI: Confirm checkout
+ UI->>API: POST /api/v1/orders + JWT
+ API->>Svc: Validate and create order
+ Svc->>DB: Read cart and trusted prices
+ Svc->>DB: Persist order and items
+ DB-->>Svc: Commit / order ID
+ Svc-->>API: Response DTO
+ API-->>UI: 201 Created
+ UI-->>Customer: Confirmation

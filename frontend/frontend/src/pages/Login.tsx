@@ -123,7 +123,7 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-gray-50 flex relative overflow-hidden">
       {/* Left side - Form */}
-      <div className="flex-1 flex items-center justify-center px-6 py-12 relative z-10 overflow-y-auto">
+      <div className="flex-1 flex items-center justify-center px-6 py-12 relative z-10">
         {/* Background decoration */}
         <div className="absolute inset-0 -z-10" aria-hidden="true">
           <div className="absolute top-0 left-1/4 w-72 h-72 bg-bhuk-100 rounded-full blur-3xl opacity-40 animate-pulse" style={{ animationDelay: '0s' }} />
@@ -135,8 +135,8 @@ export default function Login() {
           <div className="text-center mb-10 animate-slide-up" style={{ animationDelay: '100ms' }}>
             <div className="relative inline-block mb-6">
               <div className="absolute inset-0 bg-gradient-to-r from-bhuk-500 to-food-orange-500 rounded-full blur-xl opacity-30 animate-pulse" style={{ animationDuration: '3s' }} />
-              <div className="relative w-20 h-20 rounded-full p-1 bg-gradient-to-br from-bhuk-400 via-bhuk-500 to-food-orange-500 animate-spin-slow">
-                <div className="w-full h-full rounded-full bg-white p-1">
+              <div className="relative w-[220px] h-[220px] rounded-full p-3 bg-gradient-to-br from-bhuk-400 via-bhuk-500 to-food-orange-500 shadow-2xl shadow-bhuk-500/40 ring-4 ring-white/70">
+                <div className="w-full h-full rounded-full bg-white p-3">
                   <img src={logo} alt="Bhuk logo" className="w-full h-full rounded-full object-cover" />
                 </div>
               </div>
@@ -160,7 +160,7 @@ export default function Login() {
             <div className="animate-slide-up" style={{ animationDelay: '450ms' }}>
               <label htmlFor="email" className="label">Email Address</label>
               <div className="relative">
-                <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
                 <input
@@ -170,7 +170,7 @@ export default function Login() {
                   value={email}
                   onChange={e => { setEmail(e.target.value); if (fieldErrors.email) setFieldErrors(prev => ({ ...prev, email: '' })) }}
                   onBlur={handleEmailBlur}
-                  className={`input-field pl-10 pr-4 ${fieldErrors.email ? 'input-field-error' : ''}`}
+                  className={`input-field h-12 pl-11 pr-4 text-base ${fieldErrors.email ? 'input-field-error' : ''}`}
                   placeholder="you@example.com"
                   autoComplete="email"
                   autoFocus
@@ -187,7 +187,7 @@ export default function Login() {
             <div className="animate-slide-up" style={{ animationDelay: '500ms' }}>
               <label htmlFor="password" className="label">Password</label>
               <div className="relative">
-                <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
                 <input
@@ -197,7 +197,7 @@ export default function Login() {
                   value={password}
                   onChange={e => { setPassword(e.target.value); if (fieldErrors.password) setFieldErrors(prev => ({ ...prev, password: '' })) }}
                   onBlur={handlePasswordBlur}
-                  className={`input-field pl-10 pr-12 ${fieldErrors.password ? 'input-field-error' : ''}`}
+                  className={`input-field h-12 pl-11 pr-12 text-base ${fieldErrors.password ? 'input-field-error' : ''}`}
                   placeholder="Enter your password"
                   autoComplete="current-password"
                   aria-invalid={!!fieldErrors.password}
@@ -206,7 +206,7 @@ export default function Login() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? (

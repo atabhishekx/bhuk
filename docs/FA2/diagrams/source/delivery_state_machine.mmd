@@ -1,0 +1,29 @@
+# Delivery Assignment State Machine - FA2
+
+```mermaid
+stateDiagram-v2
+    [*] --> UNASSIGNED : Order Ready for Pickup
+    
+    UNASSIGNED --> OFFERED : System Offers to Partners
+    UNASSIGNED --> ASSIGNED : Admin Manual Assignment
+    UNASSIGNED --> CANCELLED : Order Cancelled
+    
+    OFFERED --> ACCEPTED : Partner Accepts
+    OFFERED --> DECLINED : Partner Declines
+    OFFERED --> EXPIRED : Offer Timeout
+    
+    ASSIGNED --> ACCEPTED : Partner Accepts
+    ASSIGNED --> DECLINED : Partner Declines
+    ASSIGNED --> EXPIRED : Assignment Timeout
+    
+    ACCEPTED --> PICKED_UP : Partner Picks Up Order
+    
+    PICKED_UP --> COMPLETED : Delivery Completed
+    PICKED_UP --> FAILED : Issue Reported
+    
+    COMPLETED --> [*]
+    DECLINED --> [*]
+    EXPIRED --> [*]
+    FAILED --> [*]
+    CANCELLED --> [*]
+```

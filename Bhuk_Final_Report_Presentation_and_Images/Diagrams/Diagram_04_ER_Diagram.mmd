@@ -1,0 +1,12 @@
+erDiagram
+ USERS ||--o{ ADDRESSES : saves
+ USERS ||--o| CARTS : owns
+ CARTS ||--o{ CART_ITEMS : contains
+ MENU_CATEGORIES ||--o{ MENU_ITEMS : groups
+ MENU_ITEMS ||--o{ CART_ITEMS : selected
+ USERS ||--o{ ORDERS : places
+ OUTLETS ||--o{ ORDERS : fulfils
+ ORDERS ||--|{ ORDER_ITEMS : contains
+ MENU_ITEMS ||--o{ ORDER_ITEMS : referenced
+ ORDERS ||--o{ PAYMENTS : has
+ ORDERS ||--o| DELIVERY_ASSIGNMENTS : assigned

@@ -97,23 +97,19 @@ export default function StaffQueue() {
 
   const fetchOrders = useCallback(async () => {
     try {
-      setLoading(true)
       const params: Record<string, string> = {}
       if (statusFilter) params.status = statusFilter
       const res = await api.get<{ data: Order[] }>('/staff/orders', { params })
       const data = res.data.data || []
       setOrders(data)
       setLastRefreshed(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }))
-      if (selected) {
-        const updated = data.find(o => o.id === selected.id)
-        if (updated) setSelected(updated)
-      }
+      setSelected(prev => (prev ? (data.find(o => o.id === prev.id) ?? prev) : null))
     } catch (e: any) {
       setError(e.response?.data?.error?.message || 'Failed to load orders')
     } finally {
       setLoading(false)
     }
-  }, [statusFilter, selected])
+  }, [statusFilter])
 
   useEffect(() => { fetchOrders() }, [fetchOrders])
 
@@ -181,14 +177,14 @@ export default function StaffQueue() {
           <div className="card p-5 space-y-4">
             <h3 className="font-bold text-sm text-gray-900 uppercase tracking-wider">Filters</h3>
             <div className="space-y-2">
-              <div className="flex gap-2">
-                <button onClick={() => setStatusFilter(null)} className={`btn ${!statusFilter ? 'btn-primary' : 'btn-outline'} btn-sm flex-1`}>All</button>
-                {['PLACED', 'ACCEPTED', 'PREPARING', 'READY_FOR_PICKUP', 'OUT_FOR_DELIVERY'].map(s => (
-                  <button key={s} onClick={() => setStatusFilter(s)} className={`btn ${statusFilter === s ? 'btn-primary' : 'btn-outline'} btn-sm flex-1`}>
-                    {labelFor(s)}
-                  </button>
-                ))}
-              </div>
+                <div className="flex flex-wrap gap-2">
+                  <button onClick={() => setStatusFilter(null)} className={`btn ${!statusFilter ? 'btn-primary' : 'btn-outline'} btn-sm text-xs whitespace-nowrap`}>All</button>
+                  {['PLACED', 'ACCEPTED', 'PREPARING', 'READY_FOR_PICKUP', 'OUT_FOR_DELIVERY'].map(s => (
+                    <button key={s} onClick={() => setStatusFilter(s)} className={`btn ${statusFilter === s ? 'btn-primary' : 'btn-outline'} btn-sm text-xs whitespace-nowrap`}>
+                      {labelFor(s)}
+                    </button>
+                  ))}
+                </div>
             </div>
             <div className="pt-3 border-t border-gray-100">
               <h3 className="font-bold text-sm text-gray-900 uppercase tracking-wider">Counts</h3>

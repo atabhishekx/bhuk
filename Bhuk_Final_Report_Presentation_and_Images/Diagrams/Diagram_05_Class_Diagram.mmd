@@ -1,0 +1,12 @@
+classDiagram
+ class OrderController { +createOrder() +getOrders() }
+ class OrderService { +createOrder() +transitionStatus() }
+ class OrderRepository { +save() +findById() }
+ class Order { -id -status -total }
+ class OrderItem { -quantity -unitPrice }
+ class OrderStatusEvent { -fromStatus -toStatus -createdAt }
+ OrderController --> OrderService
+ OrderService --> OrderRepository
+ OrderService --> Order
+ Order "1" *-- "1..*" OrderItem
+ Order "1" o-- "*" OrderStatusEvent

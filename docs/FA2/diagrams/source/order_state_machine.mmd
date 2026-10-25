@@ -1,0 +1,29 @@
+# Order State Machine - FA2
+
+```mermaid
+stateDiagram-v2
+    [*] --> PLACED : Order Created
+    
+    PLACED --> ACCEPTED : Staff Accepts
+    PLACED --> REJECTED : Staff Rejects (with reason)
+    PLACED --> CANCELLED : Customer Cancels
+    
+    ACCEPTED --> PREPARING : Staff Starts Preparation
+    ACCEPTED --> REJECTED : Staff Rejects (with reason)
+    ACCEPTED --> CANCELLED : Customer Cancels
+    
+    PREPARING --> READY_FOR_PICKUP : Preparation Complete
+    
+    READY_FOR_PICKUP --> PICKED_UP : Delivery Partner Pickup
+    READY_FOR_PICKUP --> DELIVERY_FAILED : Delivery Issue
+    
+    PICKED_UP --> OUT_FOR_DELIVERY : In Transit
+    
+    OUT_FOR_DELIVERY --> DELIVERED : Delivery Complete
+    OUT_FOR_DELIVERY --> DELIVERY_FAILED : Delivery Issue
+    
+    REJECTED --> [*]
+    CANCELLED --> [*]
+    DELIVERED --> [*]
+    DELIVERY_FAILED --> [*]
+```

@@ -30,6 +30,7 @@ export default function Menu() {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
   const [cartCount, setCartCount] = useState(0)
+  const [searchQuery, setSearchQuery] = useState('')
   const [addToCartError, setAddToCartError] = useState<string | null>(null)
   const [addingToCart, setAddingToCart] = useState<number | null>(null)
   const { success: toastSuccess, error: toastError } = useToastHelpers()
@@ -126,7 +127,12 @@ export default function Menu() {
     )
   }
 
-  const filteredItems = selectedCategory === null ? items : items.filter(i => i.categoryId === selectedCategory)
+  const filteredItems = items.filter(item => {
+    const matchesCategory = selectedCategory === null || item.categoryId === selectedCategory
+    const query = searchQuery.trim().toLowerCase()
+    const matchesSearch = !query || item.name.toLowerCase().includes(query) || (item.description?.toLowerCase().includes(query) ?? false)
+    return matchesCategory && matchesSearch
+  })
 
   return (
     <PageLayout
@@ -140,8 +146,19 @@ export default function Menu() {
         </div>
       )}
 
-      <div className="flex flex-col lg:flex-row gap-6">
-        <aside className="w-full lg:w-64 flex-shrink-0 animate-in" style={{ animationDelay: '0ms' }}>
+      <div className="mb-6 rounded-2xl bg-gradient-to-r from-bhuk-500 via-bhuk-600 to-food-orange-500 text-white p-5 shadow-lg flex items-center justify-between gap-4 animate-in">
+        <div>
+          <h3 className="font-bold text-lg">🔥 Craving something delicious?</h3>
+          <p className="text-sm text-white/90">Order now — fresh, fast, and delivered hot to your door.</p>
+        </div>
+        <span className="text-4xl">🍽️</span>
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-6 relative">
+        <div className="pointer-events-none absolute -top-10 -left-10 w-72 h-72 bg-bhuk-200 rounded-full blur-3xl opacity-30" aria-hidden />
+        <div className="pointer-events-none absolute top-1/3 -right-10 w-96 h-96 bg-food-orange-100 rounded-full blur-3xl opacity-20" aria-hidden />
+
+        <aside className="w-full lg:w-64 flex-shrink-0 animate-in relative z-10" style={{ animationDelay: '0ms' }}>
           <div className="card p-4 space-y-2">
             <h2 className="font-bold text-gray-900 animate-fade-in">Categories</h2>
             <button
@@ -166,11 +183,30 @@ export default function Menu() {
               </button>
             ))}
           </div>
-        </aside>
 
-        <section className="flex-1 animate-in" style={{ animationDelay: '100ms' }}>
+        <div className="card p-4 mt-4 bg-gradient-to-br from-bhuk-50 to-food-orange-50 border border-bhuk-100 animate-in" style={{ animationDelay: '150ms' }}>
+          <h3 className="font-bold text-gray-900 mb-2">🎉 Today's Offers</h3>
+          <ul className="text-sm text-gray-600 space-y-1">
+            <li>• Free delivery on orders above ₹499</li>
+            <li>• 10% off your first order</li>
+            <li>• Fresh & fast in 30 mins</li>
+          </ul>
+        </div>
+      </aside>
+
+        <section className="flex-1 animate-in relative z-10" style={{ animationDelay: '100ms' }}>
+          <div className="mb-4">
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              placeholder="Search menu items..."
+              className="input-field"
+              aria-label="Search menu items"
+            />
+          </div>
           {filteredItems.length === 0 ? (
-            <EmptyState title="No items available" description="No menu items found in this category." icon="🍽️" />
+            <EmptyState title="No items available" description="No menu items match your search or category." icon="🍽️" />
           ) : (
             <div className="menu-grid" role="list">
               {filteredItems.map((item, index) => (

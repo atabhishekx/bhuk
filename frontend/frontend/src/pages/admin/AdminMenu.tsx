@@ -21,6 +21,7 @@ type Item = {
   active: boolean
   available: boolean
   categoryName: string
+  categoryId?: number
 }
 
 type Outlet = {
@@ -41,6 +42,8 @@ export default function AdminMenu() {
   const [outlets, setOutlets] = useState<Outlet[]>([])
   const [selectedOutletId, setSelectedOutletId] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
+  const [availabilityFilter, setAvailabilityFilter] = useState<'all' | 'available' | 'unavailable'>('all')
+  const [activeFilter, setActiveFilter] = useState<'all' | 'active' | 'inactive'>('all')
   const [modal, setModal] = useState<ModalType>(null)
   const [modalType, setModalType] = useState<'create' | 'edit'>('create')
   const [formData, setFormData] = useState<any>({})
@@ -53,7 +56,7 @@ export default function AdminMenu() {
     try {
       const [catRes, itemRes] = await Promise.all([
         api.get('/menu/categories', { params: { outletId: selectedOutletId || undefined } }),
-        api.get('/menu/items', { params: { outletId: selectedOutletId || undefined } }),
+        api.get('/menu/items', { params: { outletId: selectedOutletId || undefined, all: true } }),
       ])
       setCategories(catRes.data.data)
       setItems(itemRes.data.data)
@@ -66,10 +69,10 @@ export default function AdminMenu() {
 
   async function fetchOutlets() {
     try {
-      const res = await api.get('/api/v1/admin/outlets')
+      const res = await api.get('/admin/outlets')
       setOutlets(res.data.data)
-      if (outlets.length === 0 && res.data.data.length > 0) {
-        setSelectedOutletId(res.data.data[0].id)
+      if (res.data.data.length > 0) {
+        setSelectedOutletId(prev => prev ?? res.data.data[0].id)
       }
     } catch (e) {
       console.error(e)
@@ -82,7 +85,7 @@ export default function AdminMenu() {
 
   async function createCategory(data: { name: string; description?: string; displayOrder?: number; active?: boolean }) {
     try {
-      await api.post('/api/v1/menu/admin/categories', data, { params: { outletId: selectedOutletId } })
+      await api.post('/menu/admin/categories', data, { params: { outletId: selectedOutletId } })
       await fetchData()
       setModal(null)
     } catch (e: any) {
@@ -92,7 +95,7 @@ export default function AdminMenu() {
 
   async function updateCategory(id: number, data: any) {
     try {
-      await api.put(`/api/v1/menu/admin/categories/${id}`, data, { params: { outletId: selectedOutletId } })
+      await api.put(`/menu/admin/categories/${id}`, data, { params: { outletId: selectedOutletId } })
       await fetchData()
       setModal(null)
     } catch (e: any) {
@@ -103,7 +106,7 @@ export default function AdminMenu() {
   async function deleteCategory(id: number) {
     if (!confirm('Delete this category?')) return
     try {
-      await api.delete(`/api/v1/menu/admin/categories/${id}`)
+      await api.delete(`/menu/admin/categories/${id}`)
       await fetchData()
     } catch (e: any) {
       alert(e.response?.data?.error?.message || 'Failed to delete category')
@@ -112,7 +115,7 @@ export default function AdminMenu() {
 
   async function createItem(data: any) {
     try {
-      await api.post('/api/v1/menu/admin/items', data, { params: { outletId: selectedOutletId } })
+      await api.post('/menu/admin/items', data, { params: { outletId: selectedOutletId } })
       await fetchData()
       setModal(null)
     } catch (e: any) {
@@ -122,7 +125,7 @@ export default function AdminMenu() {
 
   async function updateItem(id: number, data: any) {
     try {
-      await api.put(`/api/v1/menu/admin/items/${id}`, data, { params: { outletId: selectedOutletId } })
+      await api.put(`/menu/admin/items/${id}`, data, { params: { outletId: selectedOutletId } })
       await fetchData()
       setModal(null)
     } catch (e: any) {
@@ -133,7 +136,7 @@ export default function AdminMenu() {
   async function deleteItem(id: number) {
     if (!confirm('Delete this item?')) return
     try {
-      await api.delete(`/api/v1/menu/admin/items/${id}`)
+      await api.delete(`/menu/admin/items/${id}`)
       await fetchData()
     } catch (e: any) {
       alert(e.response?.data?.error?.message || 'Failed to delete item')
@@ -142,12 +145,29 @@ export default function AdminMenu() {
 
   async function toggleAvailability(id: number, available: boolean) {
     try {
-      await api.put(`/api/v1/menu/admin/items/${id}`, { available }, { params: { outletId: selectedOutletId } })
+      const item = items.find(i => i.id === id)
+      if (!item) return
+      await api.put(`/menu/admin/items/${id}`, {
+        categoryId: (item as any).categoryId,
+        name: item.name,
+        description: item.description,
+        basePriceMinor: item.basePriceMinor,
+        active: item.active,
+        available,
+      }, { params: { outletId: selectedOutletId } })
       await fetchData()
     } catch (e: any) {
       alert(e.response?.data?.error?.message || 'Failed to update availability')
     }
   }
+
+  const filteredItems = items.filter(item => {
+    if (availabilityFilter === 'available' && !item.available) return false
+    if (availabilityFilter === 'unavailable' && item.available) return false
+    if (activeFilter === 'active' && !item.active) return false
+    if (activeFilter === 'inactive' && item.active) return false
+    return true
+  })
 
   if (loading) return <Loading />
 
@@ -200,7 +220,7 @@ export default function AdminMenu() {
                         <button
                           onClick={() => {
                             setModalType('edit')
-                            setFormData({ name: cat.name, description: cat.description, displayOrder: cat.displayOrder, active: cat.active })
+                            setFormData({ id: cat.id, name: cat.name, description: cat.description, displayOrder: cat.displayOrder, active: cat.active })
                             setModal('category')
                           }}
                           className="text-xs text-bhuk-600 hover:text-bhuk-700"
@@ -233,11 +253,25 @@ export default function AdminMenu() {
                   + Add Item
                 </button>
               </div>
-              {items.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">No items</div>
+               <div className="flex flex-wrap gap-2 mb-4">
+                 <span className="text-xs font-medium text-gray-500 self-center">Availability:</span>
+                 {(['all', 'available', 'unavailable'] as const).map(f => (
+                   <button key={f} onClick={() => setAvailabilityFilter(f)} className={`btn ${availabilityFilter === f ? 'btn-primary' : 'btn-outline'} btn-sm text-xs whitespace-nowrap`}>
+                     {f === 'all' ? 'All' : f === 'available' ? 'Available' : 'Unavailable'}
+                   </button>
+                 ))}
+                 <span className="text-xs font-medium text-gray-500 self-center ml-2">Status:</span>
+                 {(['all', 'active', 'inactive'] as const).map(f => (
+                   <button key={f} onClick={() => setActiveFilter(f)} className={`btn ${activeFilter === f ? 'btn-primary' : 'btn-outline'} btn-sm text-xs whitespace-nowrap`}>
+                     {f === 'all' ? 'All' : f === 'active' ? 'Active' : 'Inactive'}
+                   </button>
+                 ))}
+               </div>
+               {filteredItems.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">No items match filters</div>
               ) : (
                 <div className="space-y-3">
-                  {items.map((item) => (
+                  {filteredItems.map((item) => (
                     <div key={item.id} className="card p-4 flex flex-col lg:flex-row lg:items-center gap-4">
                       <div className="w-16 h-16 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0">
                         <span className="text-2xl">🍽️</span>
@@ -263,7 +297,7 @@ export default function AdminMenu() {
                         <button
                           onClick={() => {
                             setModalType('edit')
-                            setFormData({ name: item.name, description: item.description, basePriceMinor: item.basePriceMinor, categoryId: (item as any).categoryId, active: item.active, available: item.available })
+                            setFormData({ id: item.id, name: item.name, description: item.description, basePriceMinor: item.basePriceMinor, categoryId: (item as any).categoryId, active: item.active, available: item.available })
                             setModal('item')
                           }}
                           className="text-xs text-bhuk-600 hover:text-bhuk-700"
@@ -401,8 +435,8 @@ export default function AdminMenu() {
                   <input
                     type="number"
                     name="basePriceMinor"
-                    value={formData.basePriceMinor || ''}
-                    onChange={(e) => setFormData({ ...formData, basePriceMinor: parseInt(e.target.value) || 0 })}
+                    value={formData.basePriceMinor ? (formData.basePriceMinor / 100) : ''}
+                    onChange={(e) => setFormData({ ...formData, basePriceMinor: Math.round((parseFloat(e.target.value) || 0) * 100) })}
                     className="input-field" required placeholder="0.00"
                   />
                 </div>

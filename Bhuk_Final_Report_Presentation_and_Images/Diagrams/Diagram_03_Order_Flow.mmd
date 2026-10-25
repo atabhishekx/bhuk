@@ -1,0 +1,11 @@
+flowchart TD
+ A([Start]) --> B[Browse menu and add items]
+ B --> C[Validate cart and availability]
+ C --> D{Cart valid?}
+ D -- No --> E[Show error and revise cart]
+ E --> B
+ D -- Yes --> F[Enter address and checkout]
+ F --> G[Authenticate and confirm]
+ G --> H[Recalculate trusted prices]
+ H --> I[Persist order, items and status event]
+ I --> J[Confirmation and tracking]

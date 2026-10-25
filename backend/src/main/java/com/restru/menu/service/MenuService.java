@@ -58,12 +58,14 @@ public class MenuService {
         return categories.stream().map(this::toCategoryResponse).collect(Collectors.toList());
     }
 
-    public List<ItemResponse> listItems(Long outletId, Long categoryId) {
+    public List<ItemResponse> listItems(Long outletId, Long categoryId, boolean all) {
         List<MenuItem> items;
         if (categoryId != null) {
-            items = itemRepository.findByCategoryIdAndActiveTrueAndAvailableTrue(categoryId);
+            items = all ? itemRepository.findByCategoryId(categoryId)
+                    : itemRepository.findByCategoryIdAndActiveTrueAndAvailableTrue(categoryId);
         } else {
-            items = itemRepository.findByActiveTrueAndAvailableTrue();
+            items = all ? itemRepository.findAll()
+                    : itemRepository.findByActiveTrueAndAvailableTrue();
         }
         return items.stream().map(item -> toItemResponse(item, outletId)).collect(Collectors.toList());
     }

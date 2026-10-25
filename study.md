@@ -472,3 +472,131 @@ mvn flyway:clean flyway:migrate
 ---
 
 *Generated for Restru project evaluation preparation. Update as project evolves.*
+
+---
+
+## 11. TECHNICAL TERMS, DEFINITIONS & USE CASES
+
+### 11.1 Architecture & Design Patterns
+- **Layered Architecture (N-Tier)** — Separates presentation, business, and data access into layers. *Use:* Controller → Service → Repository. *Why:* Testability, maintainability, separation of concerns.
+- **DTO (Data Transfer Object)** — Plain object carrying data across process boundaries. *Use:* API request/response bodies. *Why:* Decouples DB schema from API contract; hides sensitive fields.
+- **Repository Pattern** — Abstracts data access behind an interface. *Use:* Spring Data JPA interfaces. *Why:* Swappable storage, easier testing.
+- **Builder Pattern** — Constructs complex objects step-by-step. *Use:* Lombok `@Builder` on DTOs. *Why:* Readable object creation.
+- **Filter Pattern (Interceptor)** — Pre-processes requests before reaching controllers. *Use:* `JwtAuthenticationFilter`. *Why:* Centralized auth.
+- **Strategy Pattern** — Encapsulates interchangeable algorithms. *Use:* Order status transitions. *Why:* Clean state machine logic.
+- **Idempotency** — Repeating a request yields same result. *Use:* Idempotency keys on orders. *Why:* Safe retries, prevents duplicate charges.
+- **Optimistic Locking** — Detects concurrent updates via version column. *Use:* `@Version` on entities. *Why:* Avoids lost updates without DB locks.
+- **State Machine** — Finite states with defined transitions. *Use:* Order lifecycle (PLACED → DELIVERED). *Why:* Prevents invalid status jumps.
+
+### 11.2 Backend (Spring Boot) Terms
+- **Spring Boot** — Opinionated framework for production-ready Spring apps. *Use:* REST API server. *Why:* Auto-config, embedded Tomcat, fast setup.
+- **Spring MVC / @RestController** — Handles HTTP requests and returns JSON. *Use:* All controllers. *Why:* RESTful endpoints with minimal boilerplate.
+- **Spring Data JPA** — Abstraction over JPA/Hibernate for DB operations. *Use:* Repository interfaces. *Why:* Auto-generated queries, less SQL.
+- **Hibernate** — ORM mapping Java objects to DB tables. *Use:* Entity persistence. *Why:* Object-relational mapping, lazy loading.
+- **JPA (Jakarta Persistence API)** — Standard ORM specification. *Use:* `@Entity`, `@OneToMany`. *Why:* Vendor-neutral persistence.
+- **Bean Validation (JSR-380)** — Declarative validation via annotations. *Use:* `@Valid`, `@NotNull`, `@Email`. *Why:* Input validation at boundary.
+- **Flyway** — Version-controlled DB migrations. *Use:* `V1__...sql` scripts. *Why:* Reproducible schema across environments.
+- **JWT (JSON Web Token)** — Stateless signed token carrying claims. *Use:* Auth token. *Why:* No server-side sessions, scalable.
+- **BCrypt** — Adaptive password hashing. *Use:* Password storage. *Why:* Resistant to brute force/rainbow tables.
+- **CORS (Cross-Origin Resource Sharing)** — Browser security for cross-origin requests. *Use:* Allow frontend origin. *Why:* Enables SPA ↔ API communication.
+- **Security Filter Chain** — Ordered filters for auth/authz. *Use:* `SecurityConfig`. *Why:* Centralized security.
+- **@Transactional** — Wraps method in DB transaction. *Use:* Service write methods. *Why:* Atomicity, rollback on failure.
+- **HikariCP** — High-performance JDBC connection pool. *Use:* DB connections. *Why:* Efficient resource reuse.
+- **GlobalExceptionHandler (@ControllerAdvice)** — Centralized error handling. *Use:* Maps exceptions to HTTP responses. *Why:* Consistent error format.
+
+### 11.3 Frontend (React) Terms
+- **React** — Component-based UI library. *Use:* All pages/components. *Why:* Reusable UI, virtual DOM.
+- **JSX** — Syntax extension for UI markup in JS. *Use:* Component templates. *Why:* Declarative, readable.
+- **Hooks (useState, useEffect, useCallback)** — State and lifecycle in functional components. *Use:* Form state, data fetching. *Why:* No class components.
+- **Context API** — Global state without prop drilling. *Use:* `AuthContext`. *Why:* Shared auth state.
+- **React Router v6** — Client-side routing. *Use:* Page navigation. *Why:* SPA navigation without reload.
+- **Controlled Components** — Form inputs driven by state. *Use:* Login/Register forms. *Why:* Single source of truth.
+- **Axios** — HTTP client with interceptors. *Use:* API calls. *Why:* Request/response interceptors, simpler than fetch.
+- **Vite** — Fast dev server and bundler. *Use:* Build tool. *Why:* HMR, fast builds.
+- **Tailwind CSS** — Utility-first CSS framework. *Use:* Styling. *Why:* Rapid, consistent UI.
+- **Responsive Design** — Adapts to screen sizes. *Use:* Grid/flex + breakpoints. *Why:* Mobile + desktop support.
+- **Accessibility (a11y)** — Usable by all (ARIA, focus). *Use:* Labels, aria-invalid. *Why:* Inclusive UX.
+- **Lazy Loading** — Defers loading resources. *Use:* Image `loading="lazy"`. *Why:* Performance.
+
+### 11.4 Database Terms
+- **Normalization** — Organizing data to reduce redundancy. *Use:* Separate tables (users, orders). *Why:* Data integrity.
+- **Foreign Key (FK)** — Links rows across tables. *Use:* order → user. *Why:* Referential integrity.
+- **Index** — Speeds up queries. *Use:* PK/FK columns. *Why:* Fast lookups.
+- **Transaction (ACID)** — Atomic DB operations. *Use:* Order creation. *Why:* Consistency.
+- **Minor Units (Paise)** — Store money as integers. *Use:* `base_price_minor`. *Why:* Avoids float precision errors.
+- **Migration** — Versioned schema changes. *Use:* Flyway scripts. *Why:* Reproducible DB evolution.
+
+### 11.5 API & Web Terms
+- **REST (Representational State Transfer)** — Resource-based HTTP API style. *Use:* `/api/v1/menu/items`. *Why:* Standard, cacheable.
+- **HTTP Methods** — GET/POST/PUT/DELETE/PATCH. *Use:* CRUD operations. *Why:* Semantic operations.
+- **Status Codes** — 200 OK, 201 Created, 400 Bad Request, 401 Unauthorized, 404 Not Found. *Use:* API responses. *Why:* Client handling.
+- **JSON** — Lightweight data format. *Use:* API payloads. *Why:* Language-agnostic.
+- **Pagination** — Splitting large results. *Use:* Could be added. *Why:* Performance.
+- **Caching** — Storing responses for reuse. *Use:* Browser/CDN. *Why:* Speed.
+
+### 11.6 Security Terms
+- **Authentication (AuthN)** — Verifying identity. *Use:* Login. *Why:* Know who the user is.
+- **Authorization (AuthZ)** — Verifying permissions. *Use:* Role checks. *Why:* Restrict actions.
+- **Role-Based Access Control (RBAC)** — Permissions by role. *Use:* ADMIN/USER/DELIVERY_GUY. *Why:* Scalable access control.
+- **Bearer Token** — Token sent in Authorization header. *Use:* JWT. *Why:* Stateless auth.
+- **HTTPS** — Encrypted HTTP. *Use:* Production. *Why:* Data confidentiality.
+- **XSS/CSRF** — Web vulnerabilities. *Use:* Mitigations (sanitization, tokens). *Why:* Security.
+
+### 11.7 DevOps & Tooling
+- **Maven** — Java build tool. *Use:* Backend build. *Why:* Dependency management.
+- **npm** — Node package manager. *Use:* Frontend deps. *Why:* JS ecosystem.
+- **Git** — Version control. *Use:* Source tracking. *Why:* Collaboration/history.
+- **Docker** — Containerization. *Use:* Future deployment. *Why:* Consistent environments.
+- **CI/CD** — Automated build/test/deploy. *Use:* GitHub Actions. *Why:* Quality/speed.
+
+### 11.8 UI/UX Terms
+- **Component** — Reusable UI unit. *Use:* Navbar, Drawer. *Why:* Modularity.
+- **State** — Data driving UI. *Use:* Form inputs. *Why:* Reactivity.
+- **Props** — Inputs to components. *Use:* cartCount. *Why:* Reusability.
+- **Animation/Transition** — Visual motion. *Use:* slide-up, pulse. *Why:* Engagement.
+- **Skeleton Loading** — Placeholder while loading. *Use:* SkeletonCard. *Why:* Perceived performance.
+- **Empty State** — UI when no data. *Use:* EmptyState component. *Why:* Guidance.
+- **Toast Notification** — Brief feedback message. *Use:* Success/error alerts. *Why:* Non-blocking feedback.
+
+### 11.9 How & Why (Quick Map)
+- **Why JWT?** Stateless, scalable, no session store.
+- **Why paise?** Integer math avoids float errors.
+- **Why DTOs?** Security + decoupling.
+- **Why Flyway?** Reproducible DB schema.
+- **Why React Context?** Global auth without prop drilling.
+- **Why Tailwind?** Fast, consistent styling.
+- **Why layered architecture?** Maintainability/testability.
+- **Why optimistic locking?** Concurrency safety.
+- **Why idempotency keys?** Safe retries.
+
+---
+
+*End of study guide.*
+
+---
+
+## 12. QUICK DEFINITIONS (1–2 LINES EACH)
+
+- **Controller** — Receives HTTP requests, calls services, returns responses. *Why:* Keeps web layer thin and separate from business logic.
+- **Service** — Holds business rules and transactions. *Why:* Centralizes logic, reusable and testable.
+- **Repository** — Talks to the database via Spring Data. *Why:* Hides SQL/JPA details from services.
+- **Entity** — Java class mapped to a DB table. *Why:* Represents stored data as objects.
+- **DTO** — Object used to send/receive API data. *Why:* Hides DB fields and shapes API contracts.
+- **Why this folder structure?** — Grouping by feature (auth, menu, order) keeps related code together. *Why:* Easier navigation, scaling, and team work.
+- **Auth** — Verifies who the user is (login). *Why:* Protects user accounts.
+- **Authorization** — Checks what a user can do (roles). *Why:* Restricts admin/staff actions.
+- **JWT** — A signed token sent with requests. *Why:* Stateless auth without server sessions.
+- **BCrypt** — Hashes passwords safely. *Why:* Prevents password theft if DB leaks.
+- **Flyway** — Runs versioned DB scripts. *Why:* Same schema everywhere, easy updates.
+- **JPA/Hibernate** — Maps objects to tables automatically. *Why:* Less manual SQL.
+- **Transaction** — All-or-nothing DB operation. *Why:* Keeps data consistent.
+- **Paise (minor units)** — Stores money as integers. *Why:* Avoids decimal rounding errors.
+- **React Component** — Reusable UI block. *Why:* Build UI from small pieces.
+- **Hook (useState/useEffect)** — Adds state/lifecycle to components. *Why:* Simpler than class components.
+- **Context** — Shares global state (auth). *Why:* Avoids passing props deeply.
+- **Axios** — HTTP client for API calls. *Why:* Interceptors add JWT automatically.
+- **Tailwind** — Utility CSS classes. *Why:* Fast, consistent styling.
+- **Vite** — Dev server/bundler. *Why:* Fast refresh and builds.
+- **REST API** — Resource-based HTTP endpoints. *Why:* Standard, easy to consume.
+- **CORS** — Allows frontend to call backend. *Why:* Browser security for cross-origin.
+- **Responsive** — Adapts to screen sizes. *Why:* Works on mobile and desktop.
